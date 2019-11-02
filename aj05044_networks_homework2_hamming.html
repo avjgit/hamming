@@ -8,7 +8,7 @@ function PlaceCheckbits (message, checkbit = "-") {
   	let bitCounter = 1;
   	for (let i = 0; i < message.length; i++) {
   		while(IsCheckBit(bitCounter)) {
-  			word.push(checkbit)
+  			word.push(checkbit);
   			bitCounter++;
   		}
   		word.push(message.charAt(i));
