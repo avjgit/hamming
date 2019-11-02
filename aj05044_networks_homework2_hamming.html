@@ -1,19 +1,22 @@
 <script type="text/javascript">
-	
+// kods uzrakstīts Javascript valodā, 
+// izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
+// pārbaudīts Chrome 77 versijā
+// valodas atbalsts pārlūkos: https://caniuse.com/#search=es6	
 // pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
 let IsCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
 
 function PlaceCheckbits (message, checkbit = "-") {
   	let word = [];
   	let bitCounter = 1;
-  	for (let i = 0; i < message.length; i++) {
+  	[...message].forEach(char => {
   		while(IsCheckBit(bitCounter)) {
   			word.push(checkbit);
   			bitCounter++;
   		}
-  		word.push(message.charAt(i));
+  		word.push(char);
   		bitCounter++;
-  	}
+  	})
   	return word.join('');
 }
 // unittests
