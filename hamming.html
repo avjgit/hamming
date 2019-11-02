@@ -11,16 +11,6 @@ function setHamming(){
 
 	wordSentField.value = generateHamming(sendingBits);
 }
-function generateHamming(sendingBits){
-  	const sendingWord = [];
-
-  	for (var i = 0; i < sendingBits.length; i++) {
-		sendingWord.push(sendingBits.charAt(i));
-		sendingWord.push('+');
-  	}
-  	return sendingWord.join('');
-}
-console.log(generateHamming('asdf'));
 
 </script>
 <hr>
