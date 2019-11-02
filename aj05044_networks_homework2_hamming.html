@@ -8,21 +8,16 @@ let IsCheckBit = bitNr => Math.log2(bitNr) % 1 === 0;
 
 function PlaceCheckbits (message, checkbit = "-") {
   	let word = [];
-  	let bitCounter = 1;
   	[...message].forEach(char => {
-  		while(IsCheckBit(bitCounter)) {
+  		while(IsCheckBit(word.length + 1)) {
   			word.push(checkbit);
-  			bitCounter++;
   		}
   		word.push(char);
-  		bitCounter++;
   	})
   	return word.join('');
 }
 // unittests
-console.log(PlaceCheckbits('1001000'));
-console.log(PlaceCheckbits('1001000') === '--1-001-000');
-
+console.log(PlaceCheckbits('1001000'), PlaceCheckbits('1001000') === '--1-001-000');
 // console.log(IsCheckBit(1)); // 2 pow 0
 // console.log(IsCheckBit(2)); // 2 pow 1
 // console.log(!IsCheckBit(3)); // nope
