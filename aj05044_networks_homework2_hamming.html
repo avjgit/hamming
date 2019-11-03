@@ -14,7 +14,7 @@ function sumOfBits(word, bitPositions) {
     let sum = 0;
     for (var i = 0; i < bitPositions.length; i++) {
         let bitIndex = bitPositions[i] - 1;
-        // console.log("bit ", bitPositions[i], " is ", word[bitIndex]);
+        // //console.log("bit ", bitPositions[i], " is ", word[bitIndex]);
         sum += Number(word[bitIndex]);
     }
     return sum;
@@ -63,28 +63,28 @@ function HammingEncode (message) {
     return word.join('');
 }
 function Decode(word) {
-    console.log(word);
+    //console.log(word);
     let checkBits = [];
-    let flipBit = bit => bit === 1 ? 0 : 1;
+    let flipBit = bit => bit === "1" ? "0" : "1";
     
     [...word].forEach((bit, i) => {
         if (isCheckBit(i+1)){
             checkBits.push(i+1);
         }
     });
-    console.log("checkBits: ", checkBits);
+    //console.log("checkBits: ", checkBits);
     checkBits.forEach((bit, i) => {
         let baseBits = basesForCheckBit(i+1, checkBits[i], word.length, true);
         let sumBaseBits = sumOfBits(word, baseBits);
         if (!isEven(sumBaseBits)){
-            console.log("baseBits: ", baseBits);
-            console.log(sumBaseBits);
-            console.log(isEven(sumBaseBits));
+            //console.log("baseBits: ", baseBits);
+            //console.log(sumBaseBits);
+            //console.log(isEven(sumBaseBits));
         }
         checkBits[i] = getCheckBit(isParityEven(), isEven(sumBaseBits));
     });
     var checkBitsString = checkBits.reverse().join('');
-    console.log(checkBitsString);
+    //console.log(checkBitsString);
     var wrongBitPosition = parseInt(checkBitsString, 2);
     if (wrongBitPosition == 0) {
         console.log("all right");
@@ -95,7 +95,6 @@ function Decode(word) {
         wordSplit[wrongBitPosition-1] = flipBit(word[wrongBitPosition-1]);
         word = wordSplit.join('');
     }
-    console.log(word);
     let messageBits = [];
     [...word].forEach((bit, i) => {
         if (!isCheckBit(i+1)){
@@ -107,7 +106,7 @@ function Decode(word) {
 }
 
 // unittests
-// console.log("HammingEncode iekodēšanas testi: ", 
+// //console.log("HammingEncode iekodēšanas testi: ", 
 //    HammingEncode('1001000') === '00110010000'
 // && HammingEncode('1100001') === '10111001001'
 // && HammingEncode('1101101') === '11101010101'
@@ -120,7 +119,7 @@ function Decode(word) {
 // && HammingEncode('1100100') === '11111001100'
 // && HammingEncode('1100101') === '00111000101');
 
-// console.log("HammingEncode dekodēšanas testi, bez kļūdām: ",
+// //console.log("HammingEncode dekodēšanas testi, bez kļūdām: ",
 //    Decode('00110010000') === '1001000'
 // && Decode('10111001001') === '1100001'
 // && Decode('11101010101') === '1101101'
@@ -133,46 +132,46 @@ function Decode(word) {
 // && Decode('11111001100') === '1100100'
 // && Decode('00111000101') === '1100101');
 
-console.log("HammingEncode dekodēšanas testi, ar 1 kļūdu: ");
-console.log("-----------------kļūda 1. bitā", Decode('10110010000') === '1001000');
-console.log("-----------------kļūda 2. bitā", Decode('01110010000') === '1001000');
-console.log("-----------------kļūda 3. bitā", Decode('00010010000') === '1001000');
-console.log("-----------------kļūda 4. bitā", Decode('00100010000') === '1001000');
-console.log("-----------------kļūda 5. bitā", Decode('00111010000') === '1001000');
-console.log("-----------------kļūda 6. bitā", Decode('00110110000') === '1001000');
-console.log("-----------------kļūda 7. bitā", Decode('00110000000') === '1001000');
-console.log("-----------------kļūda 8. bitā", Decode('00110011000') === '1001000');
-console.log("-----------------kļūda 9. bitā", Decode('00110010100') === '1001000');
-console.log("-----------------kļūda 10. bitā", Decode('00110010010') === '1001000');
-console.log("-----------------kļūda 11. bitā", Decode('00110010001') === '1001000');
+console.log("HammingEncode dekodēšanas testi, ar 1 kļūdu: ", 
+   Decode('10110010000') === '1001000'
+&& Decode('01110010000') === '1001000'
+&& Decode('00010010000') === '1001000'
+&& Decode('00100010000') === '1001000'
+&& Decode('00111010000') === '1001000'
+&& Decode('00110110000') === '1001000'
+&& Decode('00110000000') === '1001000'
+&& Decode('00110011000') === '1001000'
+&& Decode('00110010100') === '1001000'
+&& Decode('00110010010') === '1001000'
+&& Decode('00110010001') === '1001000');
 
-// console.log(basesForCheckBit(1,1,11));
-// console.log(basesForCheckBit(2,2,11));
-// console.log(basesForCheckBit(3,4,23));
+// //console.log(basesForCheckBit(1,1,11));
+// //console.log(basesForCheckBit(2,2,11));
+// //console.log(basesForCheckBit(3,4,23));
 
-// console.log(getCheckBit(true, true) === '0');
-// console.log(getCheckBit(true, false) === '1');
-// console.log(getCheckBit(false, true) === '1');
-// console.log(getCheckBit(false, false) === '0');
+// //console.log(getCheckBit(true, true) === '0');
+// //console.log(getCheckBit(true, false) === '1');
+// //console.log(getCheckBit(false, true) === '1');
+// //console.log(getCheckBit(false, false) === '0');
 
-// console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
+// //console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
 
-// console.log(!isBaseForCheckBit(3,4,1));
-// console.log(!isBaseForCheckBit(3,4,2));
-// console.log(!isBaseForCheckBit(3,4,3));
-// console.log(!isBaseForCheckBit(3,4,4));
-// console.log(isBaseForCheckBit(3,4,5));
-// console.log(isBaseForCheckBit(3,4,6));
-// console.log(isBaseForCheckBit(3,4,7));
-// console.log(!isBaseForCheckBit(3,4,8));
+// //console.log(!isBaseForCheckBit(3,4,1));
+// //console.log(!isBaseForCheckBit(3,4,2));
+// //console.log(!isBaseForCheckBit(3,4,3));
+// //console.log(!isBaseForCheckBit(3,4,4));
+// //console.log(isBaseForCheckBit(3,4,5));
+// //console.log(isBaseForCheckBit(3,4,6));
+// //console.log(isBaseForCheckBit(3,4,7));
+// //console.log(!isBaseForCheckBit(3,4,8));
 
-// console.log((4).toString(2));
-// console.log((7).toString(2));
-// console.log(4 & 7);
-// console.log(('abc').slice(-1));
-// console.log(isParityEven());
-// console.log(isCheckBit(1)); // 2 pow 0
-// console.log(isCheckBit(2)); // 2 pow 1
-// console.log(!isCheckBit(3)); // nope
-// console.log(isCheckBit(4)); // 2 pow 2
+// //console.log((4).toString(2));
+// //console.log((7).toString(2));
+// //console.log(4 & 7);
+// //console.log(('abc').slice(-1));
+// //console.log(isParityEven());
+// //console.log(isCheckBit(1)); // 2 pow 0
+// //console.log(isCheckBit(2)); // 2 pow 1
+// //console.log(!isCheckBit(3)); // nope
+// //console.log(isCheckBit(4)); // 2 pow 2
 </script>
