@@ -62,8 +62,21 @@ function Hamming (message) {
     return word.join('');
 }
 // unittests
-let test = Hamming('1001000');
-console.log(test, test === '00110010000');
+console.log(Hamming('1001000') === '00110010000');
+
+console.log(Hamming('1100001') === '10111001001');
+
+console.log(Hamming('1101101') === '11101010101');
+
+console.log(Hamming('1101001') === '01101011001');
+
+console.log(Hamming('1101110') === '01101010110');
+console.log(Hamming('1100111') === '01111001111');
+console.log(Hamming('0100000') === '10011000000');
+console.log(Hamming('1100011') === '11111000011');
+console.log(Hamming('1101111') === '10101011111');
+console.log(Hamming('1100100') === '11111001100');
+console.log(Hamming('1100101') === '00111000101');
 
 // console.log(basesForCheckBit(1,1,11));
 // console.log(basesForCheckBit(2,2,11));
