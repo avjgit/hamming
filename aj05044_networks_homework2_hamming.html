@@ -21,8 +21,10 @@ function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength) {
 }
 
 function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition) {
+    let bitPositionbinary = bitPosition.toString(2);
     return bitPosition !== checkBitPosition
-        && bitPosition.toString(2).substr(-checkBitNumber,1) === '1';
+        && bitPositionbinary.length >= checkBitNumber
+        && bitPositionbinary.substr(-checkBitNumber,1) === '1';
 }
 
 function PlaceCheckbits (message, checkbit = "-") {
@@ -38,14 +40,17 @@ function PlaceCheckbits (message, checkbit = "-") {
     return word;
 }
 // unittests
-// console.log(basesForCheckBit(1, 11));
+// console.log(basesForCheckBit(3,4,11));
 
-// console.log(!isBaseForCheckBit(3,4));
-// console.log(isBaseForCheckBit(3,5));
-// console.log(isBaseForCheckBit(3,6));
-// console.log(isBaseForCheckBit(3,7));
-// console.log(!isBaseForCheckBit(3,8));
-// console.log(isBaseForCheckBit(4,5));
+// console.log(!isBaseForCheckBit(3,4,1));
+// console.log(!isBaseForCheckBit(3,4,2));
+// console.log(!isBaseForCheckBit(3,4,3));
+// console.log(!isBaseForCheckBit(3,4,4));
+// console.log(isBaseForCheckBit(3,4,5));
+// console.log(isBaseForCheckBit(3,4,6));
+// console.log(isBaseForCheckBit(3,4,7));
+// console.log(!isBaseForCheckBit(3,4,8));
+
 // console.log((4).toString(2));
 // console.log((7).toString(2));
 // console.log(4 & 7);
