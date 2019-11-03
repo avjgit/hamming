@@ -3,8 +3,26 @@
 // izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
 // pārbaudīts Chrome 77 versijā
 // valodas atbalsts pārlūkos: https://caniuse.com/#search=es6   
+
 // pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
 let IsCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
+
+let isParityEven = _ => true;
+
+// let isCountOfOnesEven = (bits) => 
+function basesForCheckBit(checkBitNumber, wordLength) {
+    for (var i = 0; i <= wordLength; i++) {
+        if (isBaseForCheckBit(checkBitNumber, i)) console.log(i)
+    }
+}
+
+function isBaseForCheckBit(checkBitNumber, bitPosition) {
+    let checkBitPosition = 2 ** (checkBitNumber -1 );
+    return bitPosition !== checkBitPosition
+        && bitPosition
+        .toString(2) // cipars (bita pozīcija) bināri
+        .substr(-checkBitNumber,1) === '1';
+}
 
 function PlaceCheckbits (message, checkbit = "-") {
     let word = [];
@@ -15,10 +33,22 @@ function PlaceCheckbits (message, checkbit = "-") {
     return word.join('');
 }
 // unittests
-console.log(PlaceCheckbits('1001000'), PlaceCheckbits('1001000') === '--1-001-000');
+console.log(basesForCheckBit(1, 11));
+
+console.log(!isBaseForCheckBit(3,4));
+console.log(isBaseForCheckBit(3,5));
+console.log(isBaseForCheckBit(3,6));
+console.log(isBaseForCheckBit(3,7));
+console.log(!isBaseForCheckBit(3,8));
+// console.log(isBaseForCheckBit(4,5));
+// console.log((4).toString(2));
+// console.log((7).toString(2));
+// console.log(4 & 7);
+// console.log(('abc').slice(-1));
+// console.log(PlaceCheckbits('1001000'), PlaceCheckbits('1001000') === '--1-001-000');
+// console.log(isParityEven());
 // console.log(IsCheckBit(1)); // 2 pow 0
 // console.log(IsCheckBit(2)); // 2 pow 1
 // console.log(!IsCheckBit(3)); // nope
 // console.log(IsCheckBit(4)); // 2 pow 2
-
 </script>
