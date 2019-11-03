@@ -20,9 +20,9 @@ function sumOfBits(word, bitPositions) {
 }
 
 function getCheckBit(isParityEven, isBaseBitsSumEven) {
-    if (isParityEven && isBaseBitsSumEven) return '0';
-    if (!isParityEven && !isBaseBitsSumEven) return '0';
-    return '1';
+    if (isParityEven && isBaseBitsSumEven) return 0;
+    if (!isParityEven && !isBaseBitsSumEven) return 0;
+    return 1;
 }
 
 function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength) {
@@ -41,7 +41,7 @@ function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition) {
         && bitPositionbinary.substr(-checkBitNumber,1) === '1';
 }
 
-function Hamming (message, checkbit = "-") {
+function Hamming (message) {
     let word = [];
     let checkBitPositions = [];
 
@@ -49,32 +49,33 @@ function Hamming (message, checkbit = "-") {
     [...message].forEach(char => {
         while(isCheckBit(word.length + 1)) {
             checkBitPositions.push(word.length + 1);
-            word.push(checkbit);
+            word.push(0);
         }
-        word.push(char);
+        word.push(Number(char));
     })
 
     for (var i = 0; i < checkBitPositions.length; i++) {
         let checkBitBaseBits = basesForCheckBit(i + 1, checkBitPositions[i], word.length);
         let sumBaseBits = sumOfBits(word, checkBitBaseBits);
-
-
+        word[checkBitPositions[i]-1] = getCheckBit(isParityEven(), isEven(sumBaseBits))
     }
-
-    return word;
+    return word.join('');
 }
 // unittests
+let test = Hamming('1001000');
+console.log(test, test === '00110010000');
+
 // console.log(basesForCheckBit(1,1,11));
 // console.log(basesForCheckBit(2,2,11));
 // console.log(basesForCheckBit(3,4,23));
 
+// console.log(getCheckBit(true, true) === '0');
+// console.log(getCheckBit(true, false) === '1');
+// console.log(getCheckBit(false, true) === '1');
+// console.log(getCheckBit(false, false) === '0');
 
-console.log(getCheckBit(true, true) === '0');
-console.log(getCheckBit(true, false) === '1');
-console.log(getCheckBit(false, true) === '1');
-console.log(getCheckBit(false, false) === '0');
+// console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
 
-console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
 // console.log(!isBaseForCheckBit(3,4,1));
 // console.log(!isBaseForCheckBit(3,4,2));
 // console.log(!isBaseForCheckBit(3,4,3));
@@ -88,7 +89,6 @@ console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
 // console.log((7).toString(2));
 // console.log(4 & 7);
 // console.log(('abc').slice(-1));
-// console.log(Hamming('1001000').join(''), Hamming('1001000').join('') === '--1-001-000');
 // console.log(isParityEven());
 // console.log(isCheckBit(1)); // 2 pow 0
 // console.log(isCheckBit(2)); // 2 pow 1
