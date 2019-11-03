@@ -10,10 +10,13 @@ let IsCheckBit = bitNr => Math.log2(bitNr) % 1 === 0;
 let isParityEven = _ => true;
 
 // let isCountOfOnesEven = (bits) => 
+
 function basesForCheckBit(checkBitNumber, wordLength) {
+    let checkBitBases = [];
     for (var i = 0; i <= wordLength; i++) {
-        if (isBaseForCheckBit(checkBitNumber, i)) console.log(i)
+        if (isBaseForCheckBit(checkBitNumber, i)) checkBitBases.push(i);
     }
+    return checkBitBases;
 }
 
 function isBaseForCheckBit(checkBitNumber, bitPosition) {
