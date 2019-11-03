@@ -14,6 +14,7 @@ function sumOfBits(word, bitPositions) {
     let sum = 0;
     for (var i = 0; i < bitPositions.length; i++) {
         let bitIndex = bitPositions[i] - 1;
+        // console.log("bit ", bitPositions[i], " is ", word[bitIndex]);
         sum += Number(word[bitIndex]);
     }
     return sum;
@@ -61,31 +62,40 @@ function HammingEncode (message) {
     }
     return word.join('');
 }
-
 function Decode(word) {
-    let flipBit = bit => bit == 1 ? 0 : 1;
+    console.log(word);
     let checkBits = [];
+    let flipBit = bit => bit === 1 ? 0 : 1;
+    
     [...word].forEach((bit, i) => {
         if (isCheckBit(i+1)){
-            checkBits.push(bit);
+            checkBits.push(i+1);
         }
     });
+    console.log("checkBits: ", checkBits);
     checkBits.forEach((bit, i) => {
         let baseBits = basesForCheckBit(i+1, checkBits[i], word.length, true);
         let sumBaseBits = sumOfBits(word, baseBits);
+        if (!isEven(sumBaseBits)){
+            console.log("baseBits: ", baseBits);
+            console.log(sumBaseBits);
+            console.log(isEven(sumBaseBits));
+        }
         checkBits[i] = getCheckBit(isParityEven(), isEven(sumBaseBits));
-
     });
-    var checkBitsString = checkBits.join('');
+    var checkBitsString = checkBits.reverse().join('');
+    console.log(checkBitsString);
     var wrongBitPosition = parseInt(checkBitsString, 2);
     if (wrongBitPosition == 0) {
         console.log("all right");
     }
     else {
         console.log("kļūda " + wrongBitPosition + ". bitā");
-        word[wrongBitPosition-1] = flipBit(word[wrongBitPosition-1]);
+        let wordSplit = word.split('');
+        wordSplit[wrongBitPosition-1] = flipBit(word[wrongBitPosition-1]);
+        word = wordSplit.join('');
     }
-
+    console.log(word);
     let messageBits = [];
     [...word].forEach((bit, i) => {
         if (!isCheckBit(i+1)){
@@ -97,31 +107,44 @@ function Decode(word) {
 }
 
 // unittests
-console.log("HammingEncode iekodēšanas testi: ", 
-   HammingEncode('1001000') === '00110010000'
-&& HammingEncode('1100001') === '10111001001'
-&& HammingEncode('1101101') === '11101010101'
-&& HammingEncode('1101001') === '01101011001'
-&& HammingEncode('1101110') === '01101010110'
-&& HammingEncode('1100111') === '01111001111'
-&& HammingEncode('0100000') === '10011000000'
-&& HammingEncode('1100011') === '11111000011'
-&& HammingEncode('1101111') === '10101011111'
-&& HammingEncode('1100100') === '11111001100'
-&& HammingEncode('1100101') === '00111000101');
+// console.log("HammingEncode iekodēšanas testi: ", 
+//    HammingEncode('1001000') === '00110010000'
+// && HammingEncode('1100001') === '10111001001'
+// && HammingEncode('1101101') === '11101010101'
+// && HammingEncode('1101001') === '01101011001'
+// && HammingEncode('1101110') === '01101010110'
+// && HammingEncode('1100111') === '01111001111'
+// && HammingEncode('0100000') === '10011000000'
+// && HammingEncode('1100011') === '11111000011'
+// && HammingEncode('1101111') === '10101011111'
+// && HammingEncode('1100100') === '11111001100'
+// && HammingEncode('1100101') === '00111000101');
 
-console.log("HammingEncode dekodēšanas testi: "); 
-console.log("For 1001000:", Decode('00110010000') === '1001000');
-console.log("For 1100001:", Decode('10111001001') === '1100001');
-console.log("For 1101101:", Decode('11101010101') === '1101101');
-console.log("For 1101001:", Decode('01101011001') === '1101001');
-console.log("For 1101110:", Decode('01101010110') === '1101110');
-console.log("For 1100111:", Decode('01111001111') === '1100111');
-console.log("For 0100000:", Decode('10011000000') === '0100000');
-console.log("For 1100011:", Decode('11111000011') === '1100011');
-console.log("For 1101111:", Decode('10101011111') === '1101111');
-console.log("For 1100100:", Decode('11111001100') === '1100100');
-console.log("For 1100101:", Decode('00111000101') === '1100101');
+// console.log("HammingEncode dekodēšanas testi, bez kļūdām: ",
+//    Decode('00110010000') === '1001000'
+// && Decode('10111001001') === '1100001'
+// && Decode('11101010101') === '1101101'
+// && Decode('01101011001') === '1101001'
+// && Decode('01101010110') === '1101110'
+// && Decode('01111001111') === '1100111'
+// && Decode('10011000000') === '0100000'
+// && Decode('11111000011') === '1100011'
+// && Decode('10101011111') === '1101111'
+// && Decode('11111001100') === '1100100'
+// && Decode('00111000101') === '1100101');
+
+console.log("HammingEncode dekodēšanas testi, ar 1 kļūdu: ");
+console.log("-----------------kļūda 1. bitā", Decode('10110010000') === '1001000');
+console.log("-----------------kļūda 2. bitā", Decode('01110010000') === '1001000');
+console.log("-----------------kļūda 3. bitā", Decode('00010010000') === '1001000');
+console.log("-----------------kļūda 4. bitā", Decode('00100010000') === '1001000');
+console.log("-----------------kļūda 5. bitā", Decode('00111010000') === '1001000');
+console.log("-----------------kļūda 6. bitā", Decode('00110110000') === '1001000');
+console.log("-----------------kļūda 7. bitā", Decode('00110000000') === '1001000');
+console.log("-----------------kļūda 8. bitā", Decode('00110011000') === '1001000');
+console.log("-----------------kļūda 9. bitā", Decode('00110010100') === '1001000');
+console.log("-----------------kļūda 10. bitā", Decode('00110010010') === '1001000');
+console.log("-----------------kļūda 11. bitā", Decode('00110010001') === '1001000');
 
 // console.log(basesForCheckBit(1,1,11));
 // console.log(basesForCheckBit(2,2,11));
