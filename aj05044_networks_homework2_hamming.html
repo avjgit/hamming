@@ -10,9 +10,12 @@ Tiek nosūtīts koda vārds
 <input id="wordSent" disabled><br/>
 Ievadiet saņemto koda vārdu:
 <input id="wordReceived"><br/>
-<small>saņemtais koda vārds var būt <br/>a) tieši tāds pats, kā nosūtīts - bez kļūdām, vai arī <br/>b) atšķirties no nosūtītā - simulējot pārraides kļūdu</small><br/>
-<input type="submit" onClick="run_tests()" value="Apstrādāt">
 
+
+<small>saņemtais koda vārds var būt <br/>a) tieši tāds pats, kā nosūtīts - bez kļūdām, vai arī <br/>b) atšķirties no nosūtītā - simulējot pārraides kļūdu</small><br/>
+<input type="submit" onClick="decodeHamming()" value="Dekodēt">
+Dekodēti sūtītie biti:
+<input id="bitsDecoded" disabled><br/>
 
 
 <script type="text/javascript">
@@ -27,12 +30,14 @@ Ievadiet saņemto koda vārdu:
 function setHamming(){
     const sendingBits = document.getElementById('sendingBits').value;
     const wordSentField = document.getElementById('wordSent');
-
-    // alert if not 0 or 1?
-    // get input as digits 0 or 1
-
-
-    wordSentField.value = generateHamming(sendingBits);
+    const wordReceivedField = document.getElementById('wordReceived');
+    wordSentField.value = HammingEncode(sendingBits);
+    wordReceivedField.value = wordSentField.value;
+}
+function decodeHamming() {
+    const wordReceived = document.getElementById('wordReceived');
+    const bitsDecoded = document.getElementById('bitsDecoded');
+    bitsDecoded.value = Decode(wordReceived.value);
 }
 
 
