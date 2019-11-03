@@ -8,8 +8,17 @@
 let IsCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
 
 let isParityEven = _ => true;
+let isEven = x => x % 2 === 0;
 
 // let isCountOfOnesEven = (bits) => 
+function sumOfBits(word, bitPositions) {
+    let sum = 0;
+    for (var i = 0; i < bitPositions.length; i++) {
+        let bitIndex = bitPositions[i] - 1;
+        sum += word[bitIndex];
+    }
+    return sum;
+}
 
 function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength) {
     let checkBitBases = [];
@@ -27,9 +36,11 @@ function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition) {
         && bitPositionbinary.substr(-checkBitNumber,1) === '1';
 }
 
-function PlaceCheckbits (message, checkbit = "-") {
+function Hamming (message, checkbit = "-") {
     let word = [];
     let checkBitPositions = [];
+
+    // Ģenerē vārdu ar pārbaudes bitiem, bet bez vērtībām
     [...message].forEach(char => {
         while(IsCheckBit(word.length + 1)) {
             checkBitPositions.push(word.length + 1);
@@ -37,13 +48,22 @@ function PlaceCheckbits (message, checkbit = "-") {
         }
         word.push(char);
     })
+
+    for (var i = 0; i < checkBitPositions.length; i++) {
+        let checkBitBaseBits = basesForCheckBit(i + 1, checkBitPositions[i], word.length);
+        let sumBaseBits = sumBaseBits(word, checkBitBaseBits);
+
+
+    }
+
     return word;
 }
 // unittests
-console.log(basesForCheckBit(1,1,11));
-console.log(basesForCheckBit(2,2,11));
-console.log(basesForCheckBit(3,4,23));
+// console.log(basesForCheckBit(1,1,11));
+// console.log(basesForCheckBit(2,2,11));
+// console.log(basesForCheckBit(3,4,23));
 
+console.log(sumOfBits([0, 0, 1, 0, 1], [3,5]) == 2);
 // console.log(!isBaseForCheckBit(3,4,1));
 // console.log(!isBaseForCheckBit(3,4,2));
 // console.log(!isBaseForCheckBit(3,4,3));
@@ -57,7 +77,7 @@ console.log(basesForCheckBit(3,4,23));
 // console.log((7).toString(2));
 // console.log(4 & 7);
 // console.log(('abc').slice(-1));
-// console.log(PlaceCheckbits('1001000').join(''), PlaceCheckbits('1001000').join('') === '--1-001-000');
+// console.log(Hamming('1001000').join(''), Hamming('1001000').join('') === '--1-001-000');
 // console.log(isParityEven());
 // console.log(IsCheckBit(1)); // 2 pow 0
 // console.log(IsCheckBit(2)); // 2 pow 1
