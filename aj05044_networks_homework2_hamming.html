@@ -11,44 +11,46 @@ let isParityEven = _ => true;
 
 // let isCountOfOnesEven = (bits) => 
 
-function basesForCheckBit(checkBitNumber, wordLength) {
+function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength) {
     let checkBitBases = [];
-    for (var i = 0; i <= wordLength; i++) {
-        if (isBaseForCheckBit(checkBitNumber, i)) checkBitBases.push(i);
+    for (var i = 1; i <= wordLength; i++) {
+        if (isBaseForCheckBit(checkBitNumber, checkBitPosition, i)) 
+            checkBitBases.push(i);
     }
     return checkBitBases;
 }
 
-function isBaseForCheckBit(checkBitNumber, bitPosition) {
-    let checkBitPosition = 2 ** (checkBitNumber -1 );
+function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition) {
     return bitPosition !== checkBitPosition
-        && bitPosition
-        .toString(2) // cipars (bita pozīcija) bināri
-        .substr(-checkBitNumber,1) === '1';
+        && bitPosition.toString(2).substr(-checkBitNumber,1) === '1';
 }
 
 function PlaceCheckbits (message, checkbit = "-") {
     let word = [];
+    let checkBitPositions = [];
     [...message].forEach(char => {
-        while(IsCheckBit(word.length + 1)) word.push(checkbit);
+        while(IsCheckBit(word.length + 1)) {
+            checkBitPositions.push(word.length + 1);
+            word.push(checkbit);
+        }
         word.push(char);
     })
-    return word.join('');
+    return word;
 }
 // unittests
-console.log(basesForCheckBit(1, 11));
+// console.log(basesForCheckBit(1, 11));
 
-console.log(!isBaseForCheckBit(3,4));
-console.log(isBaseForCheckBit(3,5));
-console.log(isBaseForCheckBit(3,6));
-console.log(isBaseForCheckBit(3,7));
-console.log(!isBaseForCheckBit(3,8));
+// console.log(!isBaseForCheckBit(3,4));
+// console.log(isBaseForCheckBit(3,5));
+// console.log(isBaseForCheckBit(3,6));
+// console.log(isBaseForCheckBit(3,7));
+// console.log(!isBaseForCheckBit(3,8));
 // console.log(isBaseForCheckBit(4,5));
 // console.log((4).toString(2));
 // console.log((7).toString(2));
 // console.log(4 & 7);
 // console.log(('abc').slice(-1));
-// console.log(PlaceCheckbits('1001000'), PlaceCheckbits('1001000') === '--1-001-000');
+console.log(PlaceCheckbits('1001000').join(''), PlaceCheckbits('1001000').join('') === '--1-001-000');
 // console.log(isParityEven());
 // console.log(IsCheckBit(1)); // 2 pow 0
 // console.log(IsCheckBit(2)); // 2 pow 1
