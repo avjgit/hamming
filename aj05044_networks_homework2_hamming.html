@@ -1,8 +1,40 @@
+<hr>
+<h3><p>Izlaidiet gatavus testus
+<input type=button onclick="run_tests()" value="Izlaist gatavus testus"></p>
+<hr>
+vai notestējiet ar patvaļīgiem datiem:<br/>
+</h3>
+Ievadiet sūtāmos bitus:
+<input id="sendingBits" oninput="setHamming()"><br/>
+Tiek nosūtīts koda vārds
+<input id="wordSent" disabled><br/>
+Ievadiet saņemto koda vārdu:
+<input id="wordReceived"><br/>
+<small>saņemtais koda vārds var būt <br/>a) tieši tāds pats, kā nosūtīts - bez kļūdām, vai arī <br/>b) atšķirties no nosūtītā - simulējot pārraides kļūdu</small><br/>
+<input type="submit" onClick="run_tests()" value="Apstrādāt">
+
+
+
 <script type="text/javascript">
+
+
 // kods uzrakstīts Javascript valodā, 
 // izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
 // pārbaudīts Chrome 77 versijā
 // valodas atbalsts pārlūkos: https://caniuse.com/#search=es6   
+
+
+function setHamming(){
+    const sendingBits = document.getElementById('sendingBits').value;
+    const wordSentField = document.getElementById('wordSent');
+
+    // alert if not 0 or 1?
+    // get input as digits 0 or 1
+
+
+    wordSentField.value = generateHamming(sendingBits);
+}
+
 
 // pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
 let isCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
@@ -132,18 +164,22 @@ function Decode(word) {
 // && Decode('11111001100') === '1100100'
 // && Decode('00111000101') === '1100101');
 
-console.log("HammingEncode dekodēšanas testi, ar 1 kļūdu: ", 
-   Decode('10110010000') === '1001000'
-&& Decode('01110010000') === '1001000'
-&& Decode('00010010000') === '1001000'
-&& Decode('00100010000') === '1001000'
-&& Decode('00111010000') === '1001000'
-&& Decode('00110110000') === '1001000'
-&& Decode('00110000000') === '1001000'
-&& Decode('00110011000') === '1001000'
-&& Decode('00110010100') === '1001000'
-&& Decode('00110010010') === '1001000'
-&& Decode('00110010001') === '1001000');
+// console.log("HammingEncode dekodēšanas testi, ar 1 kļūdu: ", 
+//    Decode('10110010000') === '1001000'
+// && Decode('01110010000') === '1001000'
+// && Decode('00010010000') === '1001000'
+// && Decode('00100010000') === '1001000'
+// && Decode('00111010000') === '1001000'
+// && Decode('00110110000') === '1001000'
+// && Decode('00110000000') === '1001000'
+// && Decode('00110011000') === '1001000'
+// && Decode('00110010100') === '1001000'
+// && Decode('00110010010') === '1001000'
+// && Decode('00110010001') === '1001000');
+
+// console.log("HammingEncode dekodēšanas testi, ar 2 kļūdām: ", 
+//    Decode('11110010000') === '1001000');
+
 
 // //console.log(basesForCheckBit(1,1,11));
 // //console.log(basesForCheckBit(2,2,11));
