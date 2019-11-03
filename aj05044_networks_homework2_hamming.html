@@ -14,7 +14,7 @@ function sumOfBits(word, bitPositions) {
     let sum = 0;
     for (var i = 0; i < bitPositions.length; i++) {
         let bitIndex = bitPositions[i] - 1;
-        sum += word[bitIndex];
+        sum += Number(word[bitIndex]);
     }
     return sum;
 }
@@ -25,18 +25,18 @@ function getCheckBit(isParityEven, isBaseBitsSumEven) {
     return 1;
 }
 
-function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength) {
+function basesForCheckBit(checkBitNumber, checkBitPosition, wordLength, isDecoding) {
     let checkBitBases = [];
     for (var i = 1; i <= wordLength; i++) {
-        if (isBaseForCheckBit(checkBitNumber, checkBitPosition, i)) 
+        if (isBaseForCheckBit(checkBitNumber, checkBitPosition, i, isDecoding)) 
             checkBitBases.push(i);
     }
     return checkBitBases;
 }
 
-function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition) {
+function isBaseForCheckBit(checkBitNumber, checkBitPosition, bitPosition, isDecoding) {
     let bitPositionbinary = bitPosition.toString(2);
-    return bitPosition !== checkBitPosition
+    return (isDecoding || bitPosition !== checkBitPosition)
         && bitPositionbinary.length >= checkBitNumber
         && bitPositionbinary.substr(-checkBitNumber,1) === '1';
 }
@@ -46,21 +46,56 @@ function HammingEncode (message) {
     let checkBitPositions = [];
 
     // Ģenerē vārdu ar pārbaudes bitiem, bet bez vērtībām
-    [...message].forEach(char => {
+    [...message].forEach(bit => {
         while(isCheckBit(word.length + 1)) {
             checkBitPositions.push(word.length + 1);
             word.push(0);
         }
-        word.push(Number(char));
+        word.push(Number(bit));
     })
 
     for (var i = 0; i < checkBitPositions.length; i++) {
-        let checkBitBaseBits = basesForCheckBit(i + 1, checkBitPositions[i], word.length);
+        let checkBitBaseBits = basesForCheckBit(i + 1, checkBitPositions[i], word.length, false);
         let sumBaseBits = sumOfBits(word, checkBitBaseBits);
-        word[checkBitPositions[i]-1] = getCheckBit(isParityEven(), isEven(sumBaseBits))
+        word[checkBitPositions[i]-1] = getCheckBit(isParityEven(), isEven(sumBaseBits));
     }
     return word.join('');
 }
+
+function Decode(word) {
+    let flipBit = bit => bit == 1 ? 0 : 1;
+    let checkBits = [];
+    [...word].forEach((bit, i) => {
+        if (isCheckBit(i+1)){
+            checkBits.push(bit);
+        }
+    });
+    checkBits.forEach((bit, i) => {
+        let baseBits = basesForCheckBit(i+1, checkBits[i], word.length, true);
+        let sumBaseBits = sumOfBits(word, baseBits);
+        checkBits[i] = getCheckBit(isParityEven(), isEven(sumBaseBits));
+
+    });
+    var checkBitsString = checkBits.join('');
+    var wrongBitPosition = parseInt(checkBitsString, 2);
+    if (wrongBitPosition == 0) {
+        console.log("all right");
+    }
+    else {
+        console.log("kļūda " + wrongBitPosition + ". bitā");
+        word[wrongBitPosition-1] = flipBit(word[wrongBitPosition-1]);
+    }
+
+    let messageBits = [];
+    [...word].forEach((bit, i) => {
+        if (!isCheckBit(i+1)){
+            messageBits.push(bit);
+        }
+    });
+
+    return messageBits.join('');
+}
+
 // unittests
 console.log("HammingEncode iekodēšanas testi: ", 
    HammingEncode('1001000') === '00110010000'
@@ -74,6 +109,19 @@ console.log("HammingEncode iekodēšanas testi: ",
 && HammingEncode('1101111') === '10101011111'
 && HammingEncode('1100100') === '11111001100'
 && HammingEncode('1100101') === '00111000101');
+
+console.log("HammingEncode dekodēšanas testi: "); 
+console.log("For 1001000:", Decode('00110010000') === '1001000');
+console.log("For 1100001:", Decode('10111001001') === '1100001');
+console.log("For 1101101:", Decode('11101010101') === '1101101');
+console.log("For 1101001:", Decode('01101011001') === '1101001');
+console.log("For 1101110:", Decode('01101010110') === '1101110');
+console.log("For 1100111:", Decode('01111001111') === '1100111');
+console.log("For 0100000:", Decode('10011000000') === '0100000');
+console.log("For 1100011:", Decode('11111000011') === '1100011');
+console.log("For 1101111:", Decode('10101011111') === '1101111');
+console.log("For 1100100:", Decode('11111001100') === '1100100');
+console.log("For 1100101:", Decode('00111000101') === '1100101');
 
 // console.log(basesForCheckBit(1,1,11));
 // console.log(basesForCheckBit(2,2,11));
