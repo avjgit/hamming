@@ -38,14 +38,15 @@ function setHamming(){
     wordSentField.value = HammingEncode(sendingBits);
     wordReceivedField.value = wordSentField.value;
 }
-function decodeHamming(description = '') {
+function decodeHamming() {
     const bits = document.getElementById('sendingBits').value;
     const sent = document.getElementById('wordSent').value;
     const received = document.getElementById('wordReceived').value;
-
+    document.getElementById('bitsDecoded').value = hammingBackend(bits, sent, received);
+}
+function hammingBackend(bits, sent, received, description = ''){
     let decoded = Decode(received);
-    document.getElementById('bitsDecoded').value = decoded[0]
-    
+
     let logText = datetime() 
     + ' ' + description
     + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent
@@ -55,6 +56,7 @@ function decodeHamming(description = '') {
     var node = document.createElement("li");   
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
+    return decoded[0];
 }
 
 
