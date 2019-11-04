@@ -105,23 +105,23 @@ function xor (a, b) {
 
 function encode(byte, generator) {
     const frames = [];
-    const appendedByte = byte + '0'.repeat(generator.length - 1);
-    const remainder = modulo2division(appendedByte, generator);
+    const appendedData = byte + '0'.repeat(generator.length - 1);
+    const remainder = modulo2division(appendedData, generator);
     frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
     return frames;
 };
 
 function decode(frames, generator) {
-    const arrayOfBytes = [];
+    const data = [];
     let errors = false;
     frames.forEach(frame => {
         let check = modulo2division(frame.join(''), generator);
         if (check !== '0'.repeat(generator.length - 1)) {
           errors = true;
         }
-        arrayOfBytes.push(frame.slice(0, -(generator.length - 1)));
+        data.push(frame.slice(0, -(generator.length - 1)));
     });
-    return [arrayOfBytes[0].join(""), errors];
+    return [data[0].join(""), errors];
 };
 
 crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
