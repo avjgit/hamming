@@ -37,21 +37,27 @@ function setCRC(){
     const sendingBits = document.getElementById('sendingBits').value;
     const wordSentField = document.getElementById('wordSent');
     const wordReceivedField = document.getElementById('wordReceived');
-    wordSentField.value = encode(sendingBits, '10101').join('');
+    wordSentField.value = encode(sendingBits, '10101')[0].join('');
     wordReceivedField.value = wordSentField.value;
 }
 function decodeCRC() {
     const bits = document.getElementById('sendingBits').value;
     const sent = document.getElementById('wordSent').value;
     const received = document.getElementById('wordReceived').value;
-    document.getElementById('bitsDecoded').value = crcBackend(bits, sent, received, '10101');
+    document.getElementById('bitsDecoded').value = crcBackend(bits, [], '10101');
 }
-function crcBackend(bits, sent, received, generator, description = ''){
-    let decoded = decode(received, generator);
+
+function crcBackend(bits, bitsToDamage, generator, description = ''){
+    const sent = encode(bits, generator);
+
+    const received = sent; //todo: error
+
+    const decoded = decode(received, generator);
+
     let logText = datetime() 
     + ' ' + description
-    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent
-    + ", saņemti kā " + received + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
+    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent[0].join('')
+    + ", saņemti kā " + sent[0].join('') + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
@@ -81,13 +87,11 @@ function xor (a, b) {
     return result.join('');
 };
 
-function encode(bitsSent, generator) {
+function encode(byte, generator) {
     const frames = [];
-    bitsSent.split("").map(Number).forEach(byte => {
-        const appendedByte = byte + '0'.repeat(generator.length - 1);
-        const remainder = modulo2division(appendedByte, generator);
-        frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
-    });
+    const appendedByte = byte + '0'.repeat(generator.length - 1);
+    const remainder = modulo2division(appendedByte, generator);
+    frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
     return frames;
 };
 
@@ -100,7 +104,7 @@ function decode(frames, generator) {
         }
         arrayOfBytes.push(frame.slice(0, -(generator.length - 1)));
     });
-    return [arrayOfBytes.join(''), errorsCount];
+    return [arrayOfBytes[0].join(""), errorsCount];
 };
 
 function cyclicRedundancyCheck (bitsSent) {
@@ -112,6 +116,8 @@ function cyclicRedundancyCheck (bitsSent) {
     console.log('Dešifrēts: ', decoded[0]);
     console.log('Pamanītu kļūdu skaits: ', decoded[1]);
 };
+
+crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
 
 cyclicRedundancyCheck("100100");
 </script>
