@@ -1,32 +1,29 @@
-<hr>
-<h3><p>Izlaidiet gatavus testus
-<input type=button onclick="run_tests()" value="Izlaist gatavus testus"></p>
-<hr>
-vai notestējiet ar patvaļīgiem datiem:<br/>
-</h3>
-Ievadiet sūtāmos bitus:
+Andrejs Jurčenoks, stud.apl.nr. aj05044.
+<h2>Datoru tīkli I 2.mājas darbs</h2>
+Izlasit no Tanenbauma gramatas nodalu "3.2 Error Detection and Correction" par CRC un Haminga kodu. Jebkura programmesanas valoda noprogrammet Haminga kodu un CRC un uz 5 piemeriem nodemonstret tos darbiba. Isuma paskaidrot kas tiek darits un kadas kludas piemeros tiek/netiek izlabotas vai pamanitas.<br/>
+<h3>1. daļa (no 2), Tanenbauma kods.</h3>
+<p><small>
+kods uzrakstīts Javascript valodā, 
+izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
+pārbaudīts Chrome 77 versijā
+valodas atbalsts pārlūkos: https://caniuse.com/#search=es6   
+</small></p>
+
+Ievadiet sūtāmos bitus (tikai 0 un 1, piem., 01110101):<br/>
 <input id="sendingBits" oninput="setHamming()"><br/>
-Tiek nosūtīts koda vārds
+Tiek nosūtīts koda vārds<br/>
 <input id="wordSent" disabled><br/>
-Ievadiet saņemto koda vārdu:
+Ievadiet saņemto koda vārdu:<br/>
+<small>tas var būt gan tieši tāds pats, kā nosūtīts (bez kļūdām), gan atšķirties no nosūtītā (simulējot pārraides kļūdu)</small><br/>
 <input id="wordReceived"><br/>
-
-
-<small>saņemtais koda vārds var būt <br/>a) tieši tāds pats, kā nosūtīts - bez kļūdām, vai arī <br/>b) atšķirties no nosūtītā - simulējot pārraides kļūdu</small><br/>
-<input type="submit" onClick="decodeHamming()" value="Dekodēt">
-Dekodēti sūtītie biti:
+<p><input type="submit" onClick="decodeHamming()" value="Dekodēt"></p>
+Dekodēti sūtītie biti:<br/>
 <input id="bitsDecoded" disabled><br/>
-
+Log:
+<ul id = "log">
+</ul>
 
 <script type="text/javascript">
-
-
-// kods uzrakstīts Javascript valodā, 
-// izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
-// pārbaudīts Chrome 77 versijā
-// valodas atbalsts pārlūkos: https://caniuse.com/#search=es6   
-
-
 function setHamming(){
     const sendingBits = document.getElementById('sendingBits').value;
     const wordSentField = document.getElementById('wordSent');
@@ -38,6 +35,16 @@ function decodeHamming() {
     const wordReceived = document.getElementById('wordReceived');
     const bitsDecoded = document.getElementById('bitsDecoded');
     bitsDecoded.value = Decode(wordReceived.value);
+ 
+    // var theDiv = document.getElementById("log");
+    // var content = document.createTextNode("asdf");
+    // theDiv.appendChild(content);
+
+    var node = document.createElement("li");    
+    var textnode = document.createTextNode("asdf");         
+    node.appendChild(textnode);
+    document.getElementById("log").appendChild(node);
+
 }
 
 
