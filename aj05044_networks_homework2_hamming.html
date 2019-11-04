@@ -27,7 +27,7 @@ Log:
 <script type="text/javascript">
     // pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
 let isCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
-let isParityEven = _ => true;
+let isParityEven = _ => true; // viegli realizējama izvēle lietotājam, UI ieliekot radio pogu paritātes izvēlei
 let isEven = x => x % 2 === 0;
 
 function datetime(){
