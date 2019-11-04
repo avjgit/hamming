@@ -59,11 +59,15 @@ function crcBackend(bits, bitsToDamage, generator, description = ''){
     });
 
     const decoded = decode(received, generator);
+    let hadErrors = decoded[1];
+    let text = !hadErrors 
+      ? "atšifrēts ziņojums " + decoded[0]
+      : "pamanītas kļūdas";
 
     let logText = datetime() 
     + ' ' + description
     + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent[0].join('')
-    + ", saņemti kā " + received[0].join('') + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
+    + ", saņemti kā " + received[0].join('') + "; " + text;
 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
@@ -103,19 +107,20 @@ function encode(byte, generator) {
 
 function decode(frames, generator) {
     const arrayOfBytes = [];
-    let errorsCount = 0;
+    let errors = false;
     frames.forEach(frame => {
-        if (modulo2division(frame.join(''), generator) !== '0'.repeat(generator.length - 1)) {
-          errorsCount++;
+        let check = modulo2division(frame.join(''), generator);
+        if (check !== '0'.repeat(generator.length - 1)) {
+          errors = true;
         }
         arrayOfBytes.push(frame.slice(0, -(generator.length - 1)));
     });
-    return [arrayOfBytes[0].join(""), errorsCount];
+    return [arrayOfBytes[0].join(""), errors];
 };
 
-crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
-crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
-crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
+// crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
+// crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
+// crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
 crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
 
 </script>
