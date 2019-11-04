@@ -24,6 +24,13 @@ Log:
 </ul>
 
 <script type="text/javascript">
+function datetime(){
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return date+' '+time;
+}
+
 function setHamming(){
     const sendingBits = document.getElementById('sendingBits').value;
     const wordSentField = document.getElementById('wordSent');
@@ -31,20 +38,18 @@ function setHamming(){
     wordSentField.value = HammingEncode(sendingBits);
     wordReceivedField.value = wordSentField.value;
 }
-function decodeHamming() {
+function decodeHamming(description = '') {
     const wordReceived = document.getElementById('wordReceived');
     const bitsDecoded = document.getElementById('bitsDecoded');
-    bitsDecoded.value = Decode(wordReceived.value);
- 
-    // var theDiv = document.getElementById("log");
-    // var content = document.createTextNode("asdf");
-    // theDiv.appendChild(content);
+    let decoded = Decode(wordReceived.value);
+    bitsDecoded.value = decoded[0]
+    
+    let logText = datetime() + ' ' + description + " no saņemtā vārda " + wordReceived.value + " atšifrēts ziņojums " + bitsDecoded.value + ", " + decoded[1];
 
-    var node = document.createElement("li");    
-    var textnode = document.createTextNode("asdf");         
+    var textnode = document.createTextNode(logText);         
+    var node = document.createElement("li");   
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
-
 }
 
 
@@ -130,11 +135,13 @@ function Decode(word) {
     var checkBitsString = checkBits.reverse().join('');
     //console.log(checkBitsString);
     var wrongBitPosition = parseInt(checkBitsString, 2);
+
+    var msg = '';
     if (wrongBitPosition == 0) {
-        console.log("all right");
+        msg = "bez kļūdām";
     }
     else {
-        console.log("kļūda " + wrongBitPosition + ". bitā");
+        msg = "pamanīta kļūda " + wrongBitPosition + ". bitā";
         let wordSplit = word.split('');
         wordSplit[wrongBitPosition-1] = flipBit(word[wrongBitPosition-1]);
         word = wordSplit.join('');
@@ -146,7 +153,7 @@ function Decode(word) {
         }
     });
 
-    return messageBits.join('');
+    return [messageBits.join(''), msg];
 }
 
 // unittests
