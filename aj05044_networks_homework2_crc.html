@@ -124,9 +124,9 @@ function decode(frames, generator) {
     return [arrayOfBytes[0].join(""), errors];
 };
 
-// crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
-// crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
-// crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
+crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
+crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
+crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
 crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
 
 </script>

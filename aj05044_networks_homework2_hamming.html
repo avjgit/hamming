@@ -7,6 +7,7 @@ Andrejs Jurčenoks, stud.apl.nr. aj05044.
 Realizēts inteaktīvs rīks, kas ļauj ievadīt patvaļīgus bitus iekodēšanai un atkodēšanai, izmantojot Tanenbauma algoritmu.
 Ievadiet sūtāmos bitus, tad rediģējiet (vai nemainiet) sūtāmo vārdu (tiek ģenerēts automātiski) un nospiediet pogu "Dekodēt" - rezultāts būs zemāk, žurnālierakstos.
 Žurnālierakstos (logā) ir arī redzami automātiski izlaisti testpiemēri.
+Kā redzams, ir iespējams piemeklēt arī piemērus, kas kļūdaini tiek atpazīti it kā tie būtu bez kļūdām (<i>false positive</i>).
 
 <p><small><strong>Komentārs:</strong> kods uzrakstīts Javascript valodā, izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc); pārbaudīts Chrome 77 versijā (valodas atbalsts pārlūkos: https://caniuse.com/#search=es6).</small></p>
 
@@ -59,6 +60,39 @@ hammingBackend("10", "11100", "11000", "piemērs ar kļūdu 3.bitā: ");
 hammingBackend("10", "11100", "11110", "piemērs ar kļūdu 4.bitā: ");
 hammingBackend("10", "11100", "11101", "piemērs ar kļūdu 5.bitā: ");
 hammingBackend("10", "11100", "11111", "piemērs ar divām kļūdām - šādu jau neuzķers: ");
+// izmēģināsim visus variantus:
+hammingBackend("10", "11100", "00010", "kombinācija ");
+hammingBackend("10", "11100", "00110", "kombinācija ");
+hammingBackend("10", "11100", "01010", "kombinācija ");
+hammingBackend("10", "11100", "01110", "kombinācija ");
+hammingBackend("10", "11100", "10010", "kombinācija ");
+hammingBackend("10", "11100", "10110", "kombinācija ");
+hammingBackend("10", "11100", "11010", "kombinācija ");
+hammingBackend("10", "11100", "11110", "kombinācija ");
+hammingBackend("10", "11100", "00000", "kombinācija ");
+hammingBackend("10", "11100", "00100", "kombinācija ");
+hammingBackend("10", "11100", "01000", "kombinācija ");
+hammingBackend("10", "11100", "01100", "kombinācija ");
+hammingBackend("10", "11100", "10000", "kombinācija ");
+hammingBackend("10", "11100", "10100", "kombinācija ");
+hammingBackend("10", "11100", "11000", "kombinācija ");
+hammingBackend("10", "11100", "11100", "kombinācija ");
+hammingBackend("10", "11100", "00011", "kombinācija ");
+hammingBackend("10", "11100", "00111", "kombinācija ");
+hammingBackend("10", "11100", "01011", "kombinācija ");
+hammingBackend("10", "11100", "01111", "kombinācija ");
+hammingBackend("10", "11100", "10011", "kombinācija ");
+hammingBackend("10", "11100", "10111", "kombinācija ");
+hammingBackend("10", "11100", "11011", "kombinācija ");
+hammingBackend("10", "11100", "11111", "kombinācija ");
+hammingBackend("10", "11100", "00001", "kombinācija ");
+hammingBackend("10", "11100", "00101", "kombinācija ");
+hammingBackend("10", "11100", "01001", "kombinācija ");
+hammingBackend("10", "11100", "01101", "kombinācija ");
+hammingBackend("10", "11100", "10001", "kombinācija ");
+hammingBackend("10", "11100", "10101", "kombinācija ");
+hammingBackend("10", "11100", "11001", "kombinācija ");
+hammingBackend("10", "11100", "11101", "kombinācija ");
 
 function hammingBackend(bits, sent, received, description = ''){
     let decoded = Decode(received);
@@ -67,6 +101,9 @@ function hammingBackend(bits, sent, received, description = ''){
     + ' ' + description
     + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent
     + ", saņemti kā " + received + "; atšifrēts ziņojums " + decoded[0] + ", " + decoded[1];
+
+    if (decoded[1] === "bez kļūdām" && decoded[0] !== bits) 
+        logText += " <<< Kļūdaini pozitīvs!";
 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
