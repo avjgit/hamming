@@ -39,12 +39,17 @@ function setHamming(){
     wordReceivedField.value = wordSentField.value;
 }
 function decodeHamming(description = '') {
-    const wordReceived = document.getElementById('wordReceived');
-    const bitsDecoded = document.getElementById('bitsDecoded');
-    let decoded = Decode(wordReceived.value);
-    bitsDecoded.value = decoded[0]
+    const bits = document.getElementById('sendingBits').value;
+    const sent = document.getElementById('wordSent').value;
+    const received = document.getElementById('wordReceived').value;
+
+    let decoded = Decode(received);
+    document.getElementById('bitsDecoded').value = decoded[0]
     
-    let logText = datetime() + ' ' + description + " no saņemtā vārda " + wordReceived.value + " atšifrēts ziņojums " + bitsDecoded.value + ", " + decoded[1];
+    let logText = datetime() 
+    + ' ' + description
+    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent
+    + ", saņemti kā " + received + "; atšifrēts ziņojums " + decoded[0] + ", " + decoded[1];
 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
