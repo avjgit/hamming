@@ -1,13 +1,14 @@
 Andrejs Jurčenoks, stud.apl.nr. aj05044.
 <h2>Datoru tīkli I 2.mājas darbs</h2>
-Izlasit no Tanenbauma gramatas nodalu "3.2 Error Detection and Correction" par CRC un Haminga kodu. Jebkura programmesanas valoda noprogrammet Haminga kodu un CRC un uz 5 piemeriem nodemonstret tos darbiba. Isuma paskaidrot kas tiek darits un kadas kludas piemeros tiek/netiek izlabotas vai pamanitas.<br/>
+<small><strong>Uzdevums:</strong> Izlasit no Tanenbauma gramatas nodalu "3.2 Error Detection and Correction" par CRC un Haminga kodu. Jebkura programmesanas valoda noprogrammet Haminga kodu un CRC un uz 5 piemeriem nodemonstret tos darbiba. Isuma paskaidrot kas tiek darits un kadas kludas piemeros tiek/netiek izlabotas vai pamanitas. 
+</small>
 <h3>1. daļa (no 2), Tanenbauma kods.</h3>
-<p><small>
-kods uzrakstīts Javascript valodā, 
-izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc)
-pārbaudīts Chrome 77 versijā
-valodas atbalsts pārlūkos: https://caniuse.com/#search=es6   
-</small></p>
+
+Realizēts inteaktīvs rīks, kas ļauj ievadīt patvaļīgus bitus iekodēšanai un atkodēšanai, izmantojot Tanenbauma algoritmu.
+Ievadiet sūtāmos bitus, tad rediģējiet (vai nemainiet) sūtāmo vārdu (tiek ģenerēts automātiski) un nospiediet pogu "Dekodēt" - rezultāts būs zemāk, žurnālierakstos.
+Žurnālierakstos (logā) ir arī redzami automātiski izlaisti testpiemēri.
+
+<p><small><strong>Komentārs:</strong> kods uzrakstīts Javascript valodā, izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc); pārbaudīts Chrome 77 versijā (valodas atbalsts pārlūkos: https://caniuse.com/#search=es6).</small></p>
 
 Ievadiet sūtāmos bitus (tikai 0 un 1, piem., 01110101):<br/>
 <input id="sendingBits" oninput="setHamming()"><br/>
