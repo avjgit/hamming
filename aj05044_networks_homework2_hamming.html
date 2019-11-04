@@ -25,6 +25,11 @@ Log:
 </ul>
 
 <script type="text/javascript">
+    // pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
+let isCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
+let isParityEven = _ => true;
+let isEven = x => x % 2 === 0;
+
 function datetime(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -45,6 +50,15 @@ function decodeHamming() {
     const received = document.getElementById('wordReceived').value;
     document.getElementById('bitsDecoded').value = hammingBackend(bits, sent, received);
 }
+
+hammingBackend("10", "11100", "11100", "piemērs bez kļūdām: ");
+hammingBackend("10", "11100", "01100", "piemērs ar kļūdu 1.bitā: ");
+hammingBackend("10", "11100", "10100", "piemērs ar kļūdu 2.bitā: ");
+hammingBackend("10", "11100", "11000", "piemērs ar kļūdu 3.bitā: ");
+hammingBackend("10", "11100", "11110", "piemērs ar kļūdu 4.bitā: ");
+hammingBackend("10", "11100", "11101", "piemērs ar kļūdu 5.bitā: ");
+hammingBackend("10", "11100", "11111", "piemērs ar divām kļūdām - šādu jau neuzķers: ");
+
 function hammingBackend(bits, sent, received, description = ''){
     let decoded = Decode(received);
 
@@ -59,12 +73,6 @@ function hammingBackend(bits, sent, received, description = ''){
     document.getElementById("log").appendChild(node);
     return decoded[0];
 }
-
-
-// pārbaudes biti ir tie, kuru kārtas numurs vārdā ir divnieka pakāpe (nr. 1, 2, 4, 8...)
-let isCheckBit = bitNr => Math.log2(bitNr) % 1 === 0; 
-let isParityEven = _ => true;
-let isEven = x => x % 2 === 0;
 
 // let isCountOfOnesEven = (bits) => 
 function sumOfBits(word, bitPositions) {
