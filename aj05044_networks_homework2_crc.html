@@ -44,7 +44,13 @@ function decodeCRC() {
     const bits = document.getElementById('sendingBits').value;
     const sent = document.getElementById('wordSent').value;
     const received = document.getElementById('wordReceived').value;
-    document.getElementById('bitsDecoded').value = crcBackend(bits, [], '10101');
+
+    let changedBits = [];
+    for (let i = 0; i < received.length; i++) {
+      if (received[i] != sent[i]) changedBits.push(i);
+    } 
+
+    document.getElementById('bitsDecoded').value = crcBackend(bits, changedBits, '10101');
 }
 
 function crcBackend(bits, bitsToDamage, generator, description = ''){
@@ -61,7 +67,7 @@ function crcBackend(bits, bitsToDamage, generator, description = ''){
     const decoded = decode(received, generator);
     let hadErrors = decoded[1];
     let text = !hadErrors 
-      ? "atšifrēts ziņojums " + decoded[0]
+      ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"
       : "pamanītas kļūdas";
 
     let logText = datetime() 
