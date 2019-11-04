@@ -50,14 +50,20 @@ function decodeCRC() {
 function crcBackend(bits, bitsToDamage, generator, description = ''){
     const sent = encode(bits, generator);
 
-    const received = sent; //todo: error
+    let flipBit = bit => bit === 1 ? 0 : 1;
+    const received = [];
+    received[0] = []; //todo: error
+    sent[0].forEach(x => {received[0].push(x);});
+    bitsToDamage.forEach(b => {
+        received[0][b] = flipBit(received[0][b]);
+    });
 
     const decoded = decode(received, generator);
 
     let logText = datetime() 
     + ' ' + description
     + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent[0].join('')
-    + ", saņemti kā " + sent[0].join('') + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
+    + ", saņemti kā " + received[0].join('') + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
@@ -107,17 +113,9 @@ function decode(frames, generator) {
     return [arrayOfBytes[0].join(""), errorsCount];
 };
 
-function cyclicRedundancyCheck (bitsSent) {
-    const generator = '10101';
-    const sent = encode(bitsSent, generator);
-    const received = sent; //todo: error
-    const decoded = decode(received, generator);
-    console.log('Nosūtīts:  ', bitsSent);
-    console.log('Dešifrēts: ', decoded[0]);
-    console.log('Pamanītu kļūdu skaits: ', decoded[1]);
-};
-
 crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
+crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
+crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
+crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
 
-cyclicRedundancyCheck("100100");
 </script>
