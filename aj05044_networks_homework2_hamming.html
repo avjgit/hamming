@@ -74,7 +74,6 @@ function hammingBackend(bits, sent, received, description = ''){
     return decoded[0];
 }
 
-// let isCountOfOnesEven = (bits) => 
 function sumOfBits(word, bitPositions) {
     let sum = 0;
     for (var i = 0; i < bitPositions.length; i++) {
@@ -127,6 +126,7 @@ function HammingEncode (message) {
     }
     return word.join('');
 }
+
 function Decode(word) {
     //console.log(word);
     let checkBits = [];
