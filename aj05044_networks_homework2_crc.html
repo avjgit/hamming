@@ -1,0 +1,57 @@
+<script type="text/javascript">
+//https://www.geeksforgeeks.org/modulo-2-binary-division/
+function modulo2division (divident, divisor) {
+    let part = divisor.length;
+    let tmp = divident.slice(0, part);
+    while (part < divident.length) {
+        tmp = tmp.charAt(0) === '1'
+            ? tmp = xor(divisor, tmp) + divident.charAt(part)
+            : tmp = xor('0'.repeat(part), tmp) + divident.charAt(part);
+        part += 1;      
+    }
+    tmp = tmp.charAt(0) === '1'
+        ? tmp = xor(divisor, tmp)
+        : tmp = xor('0'.repeat(part), tmp);
+    return tmp;
+};
+
+function xor (a, b) {
+    const result = [];
+    for (let i = 1; i < b.length; i++) result.push(a.charAt(i) === b.charAt(i) ? '0' : '1');
+    return result.join('');
+};
+
+function encode(bitsSent, generator) {
+    const frames = [];
+    bitsSent.split("").map(Number).forEach(byte => {
+        const appendedByte = byte + '0'.repeat(generator.length - 1);
+        const remainder = modulo2division(appendedByte, generator);
+        frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
+    });
+    return frames;
+};
+
+function decode(frames, generator) {
+    const arrayOfBytes = [];
+    let errorsCount = 0;
+    frames.forEach(frame => {
+        if (modulo2division(frame.join(''), generator) !== '0'.repeat(generator.length - 1)) {
+          errorsCount++;
+        }
+        arrayOfBytes.push(frame.slice(0, -(generator.length - 1)));
+    });
+    return [arrayOfBytes.join(''), errorsCount];
+};
+
+function cyclicRedundancyCheck (bitsSent) {
+    const generator = '10101';
+    const sent = encode(bitsSent, generator);
+    const received = sent; //todo: error
+    const decoded = decode(received, generator);
+    console.log('Nosūtīts:  ', bitsSent);
+    console.log('Dešifrēts: ', decoded[0]);
+    console.log('Pamanītu kļūdu skaits: ', decoded[1]);
+};
+
+cyclicRedundancyCheck("100100");
+</script>
