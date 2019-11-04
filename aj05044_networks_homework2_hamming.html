@@ -44,6 +44,7 @@ function setHamming(){
     wordSentField.value = HammingEncode(sendingBits);
     wordReceivedField.value = wordSentField.value;
 }
+
 function decodeHamming() {
     const bits = document.getElementById('sendingBits').value;
     const sent = document.getElementById('wordSent').value;

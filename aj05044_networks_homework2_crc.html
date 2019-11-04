@@ -1,4 +1,64 @@
+Andrejs Jurčenoks, stud.apl.nr. aj05044.
+<h2>Datoru tīkli I 2.mājas darbs</h2>
+<small><strong>Uzdevums:</strong> Izlasit no Tanenbauma gramatas nodalu "3.2 Error Detection and Correction" par CRC un Haminga kodu. Jebkura programmesanas valoda noprogrammet Haminga kodu un CRC un uz 5 piemeriem nodemonstret tos darbiba. Isuma paskaidrot kas tiek darits un kadas kludas piemeros tiek/netiek izlabotas vai pamanitas. 
+</small>
+<h3>2. daļa (no 2), CRC algoritms.</h3>
+
+Realizēts inteaktīvs rīks, kas ļauj ievadīt patvaļīgus bitus iekodēšanai un atkodēšanai, izmantojot CRC algoritmu.
+Ievadiet sūtāmos bitus, tad rediģējiet (vai nemainiet) sūtāmos bitus (tiek ģenerēts automātiski) 
+un nospiediet pogu "Dekodēt" - rezultāts būs zemāk, žurnālierakstos.
+Žurnālierakstos (logā) ir arī redzami automātiski izlaisti testpiemēri.
+
+<p><small><strong>Komentārs:</strong> kods uzrakstīts Javascript valodā, izmantojot dažas ECMAScript 2015 (ES6) versijas funkcijas (gatavu Math.log2, forEach uc); pārbaudīts Chrome 77 versijā (valodas atbalsts pārlūkos: https://caniuse.com/#search=es6).</small></p>
+
+Ievadiet sūtāmos bitus (tikai 0 un 1, piem., 01110101):<br/>
+<input id="sendingBits" oninput="setCRC()"><br/>
+Tiek nosūtīti biti<br/>
+<input id="wordSent" disabled><br/>
+Ievadiet saņemtos bitus:<br/>
+<small>tie var būt gan tieši tādi paši, kā nosūtīti (bez kļūdām), gan atšķirties no nosūtītiem (simulējot pārraides kļūdu)</small><br/>
+<input id="wordReceived"><br/>
+<p><input type="submit" onClick="decodeCRC()" value="Dekodēt"></p>
+Dekodēti sūtītie biti:<br/>
+<input id="bitsDecoded" disabled><br/>
+Log:
+<ul id = "log">
+</ul>
+
 <script type="text/javascript">
+function datetime(){
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return date+' '+time;
+}
+
+function setCRC(){
+    const sendingBits = document.getElementById('sendingBits').value;
+    const wordSentField = document.getElementById('wordSent');
+    const wordReceivedField = document.getElementById('wordReceived');
+    wordSentField.value = encode(sendingBits, '10101').join('');
+    wordReceivedField.value = wordSentField.value;
+}
+function decodeCRC() {
+    const bits = document.getElementById('sendingBits').value;
+    const sent = document.getElementById('wordSent').value;
+    const received = document.getElementById('wordReceived').value;
+    document.getElementById('bitsDecoded').value = crcBackend(bits, sent, received, '10101');
+}
+function crcBackend(bits, sent, received, generator, description = ''){
+    let decoded = decode(received, generator);
+    let logText = datetime() 
+    + ' ' + description
+    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent
+    + ", saņemti kā " + received + "; atšifrēts ziņojums " + decoded[0] + ", pamanītas " + decoded[1] + " kļūdas";
+
+    var textnode = document.createTextNode(logText);         
+    var node = document.createElement("li");   
+    node.appendChild(textnode);
+    document.getElementById("log").appendChild(node);
+    return decoded[0];
+}
 //https://www.geeksforgeeks.org/modulo-2-binary-division/
 function modulo2division (divident, divisor) {
     let part = divisor.length;
