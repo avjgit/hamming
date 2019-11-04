@@ -66,8 +66,12 @@ function crcBackend(bits, bitsToDamage, generator, description = ''){
 
     const decoded = decode(received, generator);
     let hadErrors = decoded[1];
+
+    let falsePositive = "";
+    if (!hadErrors && decoded[0] !== bits) 
+      falsePositive = " <<< Kļūdaini pozitīvs!";
     let text = !hadErrors 
-      ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"
+      ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"  + falsePositive
       : "pamanītas kļūdas";
 
     let logText = datetime() 
