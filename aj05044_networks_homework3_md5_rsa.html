@@ -1,0 +1,179 @@
+Andrejs Jurčenoks, stud.apl.nr. aj05044.
+<h2>Datoru tīkli I 3.mājas darbs</h2>
+<small><strong>Uzdevums:</strong> 
+    Ar MD5 un RSA algoritmiem nodemonstrēt kā Alise nodod elektroniski parakstītu (nevis aizšifrētu!) vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. 
+Vēstules teksts: “KINO”. 
+
+MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. 
+
+RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
+
+Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
+
+</small>
+
+<input id="txtToEncode"><br/>
+<button type="submit" id="calculateMD5">MD hash</button>
+<input id="result" />
+
+Log:
+<ul id = "log">
+</ul>
+.....
+
+un nospiediet pogu "Dekodēt" - rezultāts būs zemāk, žurnālierakstos.
+Žurnālierakstos (logā) ir arī redzami automātiski izlaisti testpiemēri.
+
+Ievadiet sūtāmos bitus (tikai 0 un 1, piem., 01110101):<br/>
+<input id="sendingBits" oninput="setCRC()"><br/>
+Tiek nosūtīti biti<br/>
+<input id="wordSent" disabled><br/>
+Ievadiet saņemtos bitus:<br/>
+<small>tie var būt gan tieši tādi paši, kā nosūtīti (bez kļūdām), gan atšķirties no nosūtītiem (simulējot pārraides kļūdu)</small><br/>
+<input id="wordReceived"><br/>
+<p><input type="submit" onClick="decodeCRC()" value="Dekodēt"></p>
+Dekodēti sūtītie biti:<br/>
+<input id="bitsDecoded" disabled><br/>
+
+
+
+
+<script type="text/javascript">
+
+
+;(function() {
+  'use strict'
+
+  var input = document.getElementById('input')
+  document
+    .getElementById('calculateMD5')
+    .addEventListener('click', function(event) {
+      event.preventDefault()
+      document.getElementById('result').value = md5(input.value)
+    })
+  input.value = '日本'
+})()
+
+
+
+
+function md5(){
+    return "qwerasdfzxcv";
+}
+
+
+
+
+
+
+
+////////////////////////////////////////
+function datetime(){
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    return date+' '+time;
+}
+
+function setCRC(){
+    const sendingBits = document.getElementById('sendingBits').value;
+    const wordSentField = document.getElementById('wordSent');
+    const wordReceivedField = document.getElementById('wordReceived');
+    wordSentField.value = encode(sendingBits, '10101')[0].join('');
+    wordReceivedField.value = wordSentField.value;
+}
+function decodeCRC() {
+    const bits = document.getElementById('sendingBits').value;
+    const sent = document.getElementById('wordSent').value;
+    const received = document.getElementById('wordReceived').value;
+
+    let changedBits = [];
+    for (let i = 0; i < received.length; i++) {
+      if (received[i] != sent[i]) changedBits.push(i);
+    } 
+
+    document.getElementById('bitsDecoded').value = crcBackend(bits, changedBits, '10101');
+}
+
+function crcBackend(bits, bitsToDamage, generator, description = ''){
+    const sent = encode(bits, generator);
+
+    let flipBit = bit => bit === 1 ? 0 : 1;
+    const received = [];
+    received[0] = []; //todo: error
+    sent[0].forEach(x => {received[0].push(x);});
+    bitsToDamage.forEach(b => {
+        received[0][b] = flipBit(received[0][b]);
+    });
+
+    const decoded = decode(received, generator);
+    let hadErrors = decoded[1];
+
+    let falsePositive = "";
+    if (!hadErrors && decoded[0] !== bits) 
+      falsePositive = " <<< Kļūdaini pozitīvs!";
+    let text = !hadErrors 
+      ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"  + falsePositive
+      : "pamanītas kļūdas";
+
+    let logText = datetime() 
+    + ' ' + description
+    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent[0].join('')
+    + ", saņemti kā " + received[0].join('') + "; " + text;
+
+    var textnode = document.createTextNode(logText);         
+    var node = document.createElement("li");   
+    node.appendChild(textnode);
+    document.getElementById("log").appendChild(node);
+    return decoded[0];
+}
+//https://www.geeksforgeeks.org/modulo-2-binary-division/
+function modulo2division (divident, divisor) {
+    let part = divisor.length;
+    let tmp = divident.slice(0, part);
+    while (part < divident.length) {
+        tmp = tmp.charAt(0) === '1'
+            ? tmp = xor(divisor, tmp) + divident.charAt(part)
+            : tmp = xor('0'.repeat(part), tmp) + divident.charAt(part);
+        part += 1;      
+    }
+    tmp = tmp.charAt(0) === '1'
+        ? tmp = xor(divisor, tmp)
+        : tmp = xor('0'.repeat(part), tmp);
+    return tmp;
+};
+
+function xor (a, b) {
+    const result = [];
+    for (let i = 1; i < b.length; i++) result.push(a.charAt(i) === b.charAt(i) ? '0' : '1');
+    return result.join('');
+};
+
+function encode(byte, generator) {
+    const frames = [];
+    const appendedData = byte + '0'.repeat(generator.length - 1);
+    const remainder = modulo2division(appendedData, generator);
+    frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
+    return frames;
+};
+
+function decode(frames, generator) {
+    const data = [];
+    let errors = false;
+    frames.forEach(frame => {
+        let check = modulo2division(frame.join(''), generator);
+        if (check !== '0'.repeat(generator.length - 1)) {
+          errors = true;
+        }
+        data.push(frame.slice(0, -(generator.length - 1)));
+    });
+    return [data[0].join(""), errors];
+};
+
+crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
+crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
+crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
+crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
+crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
+
+</script>
