@@ -1,0 +1,13 @@
+Andrejs Jurčenoks, stud.apl.nr. aj05044.
+<h2>Datoru tīkli I 3.mājas darbs</h2>
+<small><strong>Uzdevums:</strong> 
+    Ar MD5 un RSA algoritmiem nodemonstrēt kā Alise nodod elektroniski parakstītu (nevis aizšifrētu!) vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. 
+Vēstules teksts: “KINO”. 
+
+MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. 
+
+RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
+
+Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
+
+</small>

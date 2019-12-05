@@ -1,0 +1,25 @@
+<input id="txtToEncode">
+<button type="submit" id="calculateMD5">-></button>
+<input id="result" />
+
+<script type="text/javascript">
+
+
+    ;(function() {
+      'use strict'
+    
+      var input = document.getElementById('txtToEncode')
+      document
+        .getElementById('calculateMD5')
+        .addEventListener('click', function(event) {
+          event.preventDefault()
+          document.getElementById('result').value = md5(input.value)
+        })
+      input.value = '日本'
+    })()
+    
+    function md5(){
+        return "qwerasdfzxcv";
+    }
+
+</script>
