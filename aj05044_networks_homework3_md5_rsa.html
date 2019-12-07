@@ -16,15 +16,34 @@ Log:<ul id = "log"></ul>
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 // sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
-// te RSA tests:
+
+// RSA tests:
 var rsa = {
     p: 3,
     q: 11,
     n: 33, //p * q
     z: 20, //(p-1)*(q-1)
     private_key_d: 7, // gcd(z, d) = 1
-    public_key_e: 3, // d*e = x*z + 1
+    public_key_e: 3 // d*e = x*z + 1
 }
+// Izvēloties lielākus private/public key, piem., 9 un 57
+// p	17
+// q	17
+// n	289
+// z	256
+// d	9
+// e	57
+// rodas aprēķinu problēmas, kāpinot unikodu, piemēram, 65 - 57.pakāpē
+// javascript valodā (kuru izmantoju ērta demo iespējām) to risina ar īpašu big integer bibliotēku:
+// http://www-cs-students.stanford.edu/~tjw/jsbn/
+// http://www-cs-students.stanford.edu/~tjw/jsbn/jsbn.js
+// un sarežģītāku RSA algoritma implementāciju
+// http://www-cs-students.stanford.edu/~tjw/jsbn/rsa.js
+// http://www-cs-students.stanford.edu/~tjw/jsbn/rsa2.js
+// kas ir industrijas kvalitātes, bet ir stipri aiz vienkārša prototipa jeb proof-of-concept "rāmjiem",
+// par traucē saprast algoritma būtību aiz javascript īpatnībām nepieciešamām implementācijas detaļām;
+// atslēgu ar nelielu vērtību izmantošana labi der apmācības mērķim, jo ļauj saredzēt algoritma būtību
+
 function encodeRSA(data){
     // funkcija tiek veidota pēc 10.lekcijas slaida
     return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.private_key_d) % rsa.n);
