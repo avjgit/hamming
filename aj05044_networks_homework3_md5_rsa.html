@@ -41,16 +41,17 @@ function sendAndReceive(options){
 // No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
 // <input id="bitsDecoded" disabled><br/>
 // Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
+    log(description);
+}
 
-    let logText = datetime() 
-    + ' ' + description;
-
+function log(txt) {
+    let logText = `${new Date().toISOString()} ${txt}`; 
     var textnode = document.createTextNode(logText);         
     var node = document.createElement("li");   
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
-
 }
+
 function encodeRSA(dataToEncode){
     return dataToEncode;
 }
@@ -77,7 +78,8 @@ function datetime(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds();
-    return date+' '+time;
+    // return date+' '+time;
+    return new Date().toISOString();
 }
 
 function setCRC(){
