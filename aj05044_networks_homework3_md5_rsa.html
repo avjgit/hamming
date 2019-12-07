@@ -6,7 +6,7 @@ Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu 
 </small></p>
 Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="fillReceived()"><br/>
 Visiem ir zināma Alises publiskā atslēga X.<br/>
-Bobs saņems šādu tekstu:<br/><small>var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots<br/>
+Bobs saņems šādu tekstu:<br/><small>var būt kā identisks Alises nosūtītajam, tā arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots<br/>
 Mallory nevar viltot hashkodu, jo tas tiek nosūtīts šifrēts, un ir atšifrējams ar Alises publisko atslēgu;<br/>
 lai iešifrētu savu hashkodu tā, lai tas būtu atšifrējams ar Alises publisko atslēgu, Mallory jāzin Alises privātā atslēga, kura viņam nav zināma
 </small><br/><input id="plainTextReceived"><br/>
@@ -16,6 +16,9 @@ Log:<ul id = "log"></ul>
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 // sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
+
+// encodeRSA("SUZANNE");
+
 function fillReceived(){
     document.getElementById('plainTextReceived').value = 
     document.getElementById('plainTextSent').value;
@@ -51,7 +54,21 @@ function log(txt) {
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
 }
+var rsa = {
+    p: 3,
+    q: 11,
+    n: 33, //p * q
+    z: 20, //(p-1)*(q-1)
+    d: 7, // gcd(z, d) = 1
+    e: 3, // d*e = x*z + 1
+}
+
+console.log(rr("SUZANNE"));
+function rr(data){
+    return [...data].map(x => x.charCodeAt()-64);
+}
 function encodeRSA(dataToEncode){
+    // funkcija tiek veidota pēc 10.lekcijas slaida
     return dataToEncode;
 }
 function decodeRSA(dataToDecode){
