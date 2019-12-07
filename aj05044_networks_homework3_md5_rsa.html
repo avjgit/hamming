@@ -4,7 +4,7 @@ vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. Vēstules teks
 MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
 Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
 </small></p>
-Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="setMD5()"><br/>
+Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="setUI()"><br/>
 
 Teksta elektroniskam parakstam tiek ģenerēts MD5 kods<br/><input id="hashCodeSent" disabled><br/>
 
@@ -15,20 +15,20 @@ Mallory nevar viltot hashkodu, jo tas tiek nosūtīts šifrēts, un ir atšifrē
 lai iešifrētu savu hashkodu tā, lai tas būtu atšifrējams ar Alises publisko atslēgu, Mallory jāzin Alises privātā atslēga, kura viņam nav zināma
 </small><br/><input id="plainTextReceived"><br/>
 
-<p><input type="submit" onClick="decodeCRC()" value="Nosūtīt Bobam"></p><hr/>
+<p><input type="submit" onClick="sendAndReceive()" value="Nosūtīt Bobam"></p><hr/>
 
 Log:<ul id = "log"></ul>
 
 <script type="text/javascript">
 
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
-// test({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
-// test({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
+// sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
+// sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
 
-function test(options){
+function sendAndReceive(options){
     document.getElementById('plainTextSent').value = options.plainTextToSend;
     document.getElementById('plainTextReceived').value = options.plainTextToReceive;
-    setMD5();
+    setUI();
 }
 
 crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
@@ -38,7 +38,7 @@ crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
 crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
 
 
-function setMD5(){
+function setUI(){
     const plainTextSent = document.getElementById('plainTextSent');
     const hashCodeSentField = document.getElementById('hashCodeSent');
     hashCodeSentField.value = md5(plainTextSent.value);
@@ -562,6 +562,6 @@ function decode(frames, generator) {
   }
 })(this)
 
-test({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
-test({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
+sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
+sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
 </script>
