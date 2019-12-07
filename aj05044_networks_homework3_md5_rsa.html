@@ -50,14 +50,14 @@ function sendAndReceive(options){
     receive(options.txtReceived, hashSent);
 }
 function send(txt){
-    var hash = md5(txt);
+    var hash = md5(txt).toUpperCase();
     var hashEncoded = encodeRSA(hash);
     log(`Sūta tekstu ${txt} un tā hashkodu ${hash} šifrēti nosūta kā ${hashEncoded}.`);
     return hashEncoded;
 }
 function receive(txt, hashEncoded) {
     var hashDecoded = decodeRSA(hashEncoded);
-    var hashOfReceivedText = md5(txt);
+    var hashOfReceivedText = md5(txt).toUpperCase();
     var hashesEquality = hashDecoded === hashOfReceivedText ? "vienādi" : "atšķirīgi";
     var autencityResult = hashesEquality === "vienādi" ? "ir autentisks" : "NAV autentisks";
     log(`Saņēma tekstu ${txt} un tā šifrētu hashkodu ${hashEncoded}, 
