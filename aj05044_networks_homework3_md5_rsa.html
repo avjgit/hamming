@@ -26,9 +26,40 @@ Log:<ul id = "log"></ul>
 // sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
 
 function sendAndReceive(options){
-    document.getElementById('plainTextSent').value = options.plainTextToSend;
-    document.getElementById('plainTextReceived').value = options.plainTextToReceive;
-    setUI();
+    // document.getElementById('plainTextSent').value = options.plainTextToSend;
+    // document.getElementById('plainTextReceived').value = options.plainTextToReceive;
+    // setUI();
+
+    let description = `Nosūtīts teksts ${options.plainTextToSend}, 
+    saņemts teksts ${options.plainTextToReceive}`;
+
+    let text = "Tiek simulēta teksta "
+    var isAuthentic = analyzeAuthentity(options.plainTextToReceive, encodeRSA(md5(options.plainTextToSend)));
+
+//       No RSA šifrēta ziņojuma dekodēts šāds MD5 kods:<br/>
+// <input id="bitsDecoded" disabled><br/>
+// No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
+// <input id="bitsDecoded" disabled><br/>
+// Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
+
+    let logText = datetime() 
+    + ' ' + description;
+
+    var textnode = document.createTextNode(logText);         
+    var node = document.createElement("li");   
+    node.appendChild(textnode);
+    document.getElementById("log").appendChild(node);
+
+}
+function encodeRSA(dataToEncode){
+    return dataToEncode;
+}
+function decodeRSA(dataToDecode){
+    return dataToDecode;
+}
+
+function analyzeAuthentity(txt, hash){
+
 }
 
 crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
