@@ -4,36 +4,31 @@ vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. Vēstules teks
 MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
 Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
 </small></p>
-Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="setUI()"><br/>
-
-Teksta elektroniskam parakstam tiek ģenerēts MD5 kods<br/><input id="hashCodeSent" disabled><br/>
-
-MD5 kods tiek RSA šifrēts kā <br/><input id="rsaSent" disabled>Visiem ir zināma Alises publiskā atslēga X.<br/>
-
+Alise nosūta Bobam tekstu:<br/><input id="plainTextSent"><br/>
+Visiem ir zināma Alises publiskā atslēga X.<br/>
 Bobs saņems šādu tekstu:<br/><small>var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots<br/>
 Mallory nevar viltot hashkodu, jo tas tiek nosūtīts šifrēts, un ir atšifrējams ar Alises publisko atslēgu;<br/>
 lai iešifrētu savu hashkodu tā, lai tas būtu atšifrējams ar Alises publisko atslēgu, Mallory jāzin Alises privātā atslēga, kura viņam nav zināma
 </small><br/><input id="plainTextReceived"><br/>
-
-<p><input type="submit" onClick="sendAndReceive()" value="Nosūtīt Bobam"></p><hr/>
-
+<p><input type="submit" onClick="sendAndReceiveFromUI()" value="Nosūtīt Bobam"></p><hr/>
 Log:<ul id = "log"></ul>
-
 <script type="text/javascript">
-
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 // sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
-
+function sendAndReceiveFromUI(){
+    sendAndReceive({
+        txtSent: document.getElementById('plainTextSent').value, 
+        txtReceived: document.getElementById('plainTextReceived').value});
+}
 function sendAndReceive(options){
     var hashSent = send(options.txtSent);
     receive(options.txtReceived, hashSent);
 }
-
 function send(txt){
     var hash = md5(txt);
     var hashEncoded = encodeRSA(hash);
-    log(`Sūta tekstu ${txt} un tā hashkodu ${hash} šifrēti nosūtīta kā ${hashEncoded}.`);
+    log(`Sūta tekstu ${txt} un tā hashkodu ${hash} šifrēti nosūta kā ${hashEncoded}.`);
     return hashEncoded;
 }
 function receive(txt, hashEncoded) {
@@ -58,18 +53,11 @@ function encodeRSA(dataToEncode){
 function decodeRSA(dataToDecode){
     return dataToDecode;
 }
-
-crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
-crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
-crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
-crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
-crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
-
-function setUI(){
-    const plainTextField = document.getElementById('plainTextSent');
-    const hashCodeSentField = document.getElementById('hashCodeSent');
-    hashCodeSentField.value = md5(plainTextField.value);
-}
+// function setUI(){
+//     const plainTextField = document.getElementById('plainTextSent');
+//     const hashCodeSentField = document.getElementById('hashCodeSent');
+//     hashCodeSentField.value = md5(plainTextField.value);
+// }
 function datetime(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
