@@ -1,37 +1,43 @@
-Andrejs Jurčenoks, stud.apl.nr. aj05044.
-<h2>DatZ5009 Datoru tīkli I 3.mājas darbs</h2>
-<p><small><strong>Uzdevums:</strong> 
-Ar MD5 un RSA algoritmiem nodemonstrēt kā Alise nodod elektroniski parakstītu (nevis aizšifrētu!) 
-vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. 
-Vēstules teksts: “KINO”. 
-MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. 
-RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
-Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) 
-un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
+Andrejs Jurčenoks, stud.apl.nr. aj05044.<h2>DatZ5009 Datoru tīkli I 3.mājas darbs</h2>
+<p><small><strong>Uzdevums:</strong> Ar MD5 un RSA algoritmiem nodemonstrēt kā Alise nodod elektroniski parakstītu (nevis aizšifrētu!) 
+vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. Vēstules teksts: “KINO”. 
+MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
+Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
 </small></p>
+Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="setMD5()"><br/>
 
-Alise nosūta Bobam tekstu:<br/>
-<input id="sendingBits" oninput="setMD5()"><br/>
-Teksta elektroniskam parakstam tiek ģenerēts MD5 kods<br/>
-<input id="wordSent" disabled><br/>
-MD5 kods tiek RSA šifrēts:<br/>
-<input id="rsaSent" disabled><br/>
-Bobs saņems šādu tekstu:<br/>
-<small>
-var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots</small>
-<br/>
-<input id="wordReceived"><br/>
-<p><input type="submit" onClick="decodeCRC()" value="Nosūtīt Bobam"></p>
-<hr/>
+Teksta elektroniskam parakstam tiek ģenerēts MD5 kods<br/><input id="hashCodeSent" disabled><br/>
+
+MD5 kods tiek RSA šifrēts kā <br/><input id="rsaSent" disabled>Visiem ir zināma Alises publiskā atslēga X.<br/>
+
+Bobs saņems šādu tekstu:<br/><small>var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots<br/>
+Mallory nevar viltot hashkodu, jo tas tiek nosūtīts šifrēts, un ir atšifrējams ar Alises publisko atslēgu;<br/>
+lai iešifrētu savu hashkodu tā, lai tas būtu atšifrējams ar Alises publisko atslēgu, Mallory jāzin Alises privātā atslēga, kura viņam nav zināma
+</small><br/><input id="plainTextReceived"><br/>
+
+<p><input type="submit" onClick="decodeCRC()" value="Nosūtīt Bobam"></p><hr/>
 
 Log:<ul id = "log"></ul>
 
 <script type="text/javascript">
 
+function test(options){
+    document.getElementById('plainTextSent').value = options.plainTextToSend;
+    document.getElementById('plainTextReceived').value = options.plainTextToReceive;
+    setMD5();
+}
+
+crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
+crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
+crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
+crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
+crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
+
+
 function setMD5(){
-    const sendingBits = document.getElementById('sendingBits');
-    const wordSentField = document.getElementById('wordSent');
-    wordSentField.value = md5(sendingBits.value);
+    const plainTextSent = document.getElementById('plainTextSent');
+    const hashCodeSentField = document.getElementById('hashCodeSent');
+    hashCodeSentField.value = md5(plainTextSent.value);
 }
 
 
@@ -45,16 +51,16 @@ function datetime(){
 }
 
 function setCRC(){
-    const sendingBits = document.getElementById('sendingBits').value;
-    const wordSentField = document.getElementById('wordSent');
-    const wordReceivedField = document.getElementById('wordReceived');
-    wordSentField.value = encode(sendingBits, '10101')[0].join('');
-    wordReceivedField.value = wordSentField.value;
+    const plainTextSent = document.getElementById('plainTextSent').value;
+    const hashCodeSentField = document.getElementById('hashCodeSent');
+    const plainTextReceivedField = document.getElementById('plainTextReceived');
+    hashCodeSentField.value = encode(plainTextSent, '10101')[0].join('');
+    plainTextReceivedField.value = hashCodeSentField.value;
 }
 function decodeCRC() {
-    const bits = document.getElementById('sendingBits').value;
-    const sent = document.getElementById('wordSent').value;
-    const received = document.getElementById('wordReceived').value;
+    const bits = document.getElementById('plainTextSent').value;
+    const sent = document.getElementById('hashCodeSent').value;
+    const received = document.getElementById('plainTextReceived').value;
 
     let changedBits = [];
     for (let i = 0; i < received.length; i++) {
@@ -145,18 +151,13 @@ function decode(frames, generator) {
     return [data[0].join(""), errors];
 };
 
-crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
-crcBackend("100100", [0], '10101', "piemērs ar 1 kļūdu, 0.bitā: ");
-crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
-crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
-crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
 
 
 
 /*
 *
 * zemāk esošam MD5 aprēķinam, atbilstoši atļaujai uzdevumā, ir izmantota ārēja bibliotēka https://github.com/blueimp/JavaScript-MD5
-*
+* pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 */
 
 /*
@@ -561,4 +562,7 @@ crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājo
     $.md5 = md5
   }
 })(this)
+
+test({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
+test({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
 </script>
