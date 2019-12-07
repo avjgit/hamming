@@ -22,28 +22,29 @@ Log:<ul id = "log"></ul>
 <script type="text/javascript">
 
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
-// sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
-// sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
+// sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
+// sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
 
 function sendAndReceive(options){
-    // document.getElementById('plainTextSent').value = options.plainTextToSend;
-    // document.getElementById('plainTextReceived').value = options.plainTextToReceive;
-    // setUI();
-
-    let description = `Nosūtīts teksts ${options.plainTextToSend}, 
-    saņemts teksts ${options.plainTextToReceive}`;
-
-    let text = "Tiek simulēta teksta "
-    var isAuthentic = analyzeAuthentity(options.plainTextToReceive, encodeRSA(md5(options.plainTextToSend)));
-
-//       No RSA šifrēta ziņojuma dekodēts šāds MD5 kods:<br/>
-// <input id="bitsDecoded" disabled><br/>
-// No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
-// <input id="bitsDecoded" disabled><br/>
-// Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
-    log(description);
+    var hashSent = send(options.txtSent);
+    receive(options.txtReceived, hashSent);
 }
 
+function send(txt){
+    var hash = md5(txt);
+    var hashEncoded = encodeRSA(hash);
+    log(`Sūta tekstu ${txt} un tā hashkodu ${hash} šifrēti nosūtīta kā ${hashEncoded}.`);
+    return hashEncoded;
+}
+function receive(txt, hashEncoded) {
+    var hashDecoded = decodeRSA(hashEncoded);
+    var hashOfReceivedText = md5(txt);
+    var hashesEquality = hashDecoded === hashOfReceivedText ? "vienādi" : "atšķirīgi";
+    var autencityResult = hashesEquality === "vienādi" ? "ir autentisks" : "NAV autentisks";
+    log(`Saņēma tekstu ${txt} un tā šifrētu hashkodu ${hashEncoded}, 
+    kas tika atšifrēts kā ${hashDecoded}. Saņemtā teksta hash tiek aprēķināts kā ${hashOfReceivedText}.
+    Saņemtais un aprēķinātas hashkodi ir ${hashesEquality}, līdz ar to secināts, ka ziņojums ${autencityResult}`);
+}
 function log(txt) {
     let logText = `${new Date().toISOString()} ${txt}`; 
     var textnode = document.createTextNode(logText);         
@@ -51,16 +52,11 @@ function log(txt) {
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
 }
-
 function encodeRSA(dataToEncode){
     return dataToEncode;
 }
 function decodeRSA(dataToDecode){
     return dataToDecode;
-}
-
-function analyzeAuthentity(txt, hash){
-
 }
 
 crcBackend("100100", [], '10101', "piemērs bez kļūdām: ");
@@ -594,6 +590,6 @@ function decode(frames, generator) {
   }
 })(this)
 
-sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
-sendAndReceive({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
+sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
+sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
 </script>
