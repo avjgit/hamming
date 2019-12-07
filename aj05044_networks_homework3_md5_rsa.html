@@ -4,7 +4,7 @@ vēstuli Bobam un kā Bobs pārbauda šī dokumenta autentiskumu. Vēstules teks
 MD5 programmas tekstu var ņemt no RFC 1321, bet RSA obligāti programmēt pašam. RSA algoritms ir detalizēti ilustrēts 10.lekcijas slaidos. 
 Procesu drīkst demonstret ar triviala garuma atslēgām (n>256) un saīsinātu MD5 digestu (piemēram, lietot tikai 1. baitu no MD5).
 </small></p>
-Alise nosūta Bobam tekstu:<br/><input id="plainTextSent"><br/>
+Alise nosūta Bobam tekstu:<br/><input id="plainTextSent" oninput="fillReceived()"><br/>
 Visiem ir zināma Alises publiskā atslēga X.<br/>
 Bobs saņems šādu tekstu:<br/><small>var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots<br/>
 Mallory nevar viltot hashkodu, jo tas tiek nosūtīts šifrēts, un ir atšifrējams ar Alises publisko atslēgu;<br/>
@@ -16,6 +16,10 @@ Log:<ul id = "log"></ul>
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 // sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
+function fillReceived(){
+    document.getElementById('plainTextReceived').value = 
+    document.getElementById('plainTextSent').value;
+}
 function sendAndReceiveFromUI(){
     sendAndReceive({
         txtSent: document.getElementById('plainTextSent').value, 
@@ -53,128 +57,11 @@ function encodeRSA(dataToEncode){
 function decodeRSA(dataToDecode){
     return dataToDecode;
 }
-// function setUI(){
-//     const plainTextField = document.getElementById('plainTextSent');
-//     const hashCodeSentField = document.getElementById('hashCodeSent');
-//     hashCodeSentField.value = md5(plainTextField.value);
-// }
-function datetime(){
-    var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds();
-    // return date+' '+time;
-    return new Date().toISOString();
-}
-
-function setCRC(){
-    const plainTextSent = document.getElementById('plainTextSent').value;
-    const hashCodeSentField = document.getElementById('hashCodeSent');
-    const plainTextReceivedField = document.getElementById('plainTextReceived');
-    hashCodeSentField.value = encode(plainTextSent, '10101')[0].join('');
-    plainTextReceivedField.value = hashCodeSentField.value;
-}
-function decodeCRC() {
-    const bits = document.getElementById('plainTextSent').value;
-    const sent = document.getElementById('hashCodeSent').value;
-    const received = document.getElementById('plainTextReceived').value;
-
-    let changedBits = [];
-    for (let i = 0; i < received.length; i++) {
-      if (received[i] != sent[i]) changedBits.push(i);
-    } 
-
-    document.getElementById('bitsDecoded').value = crcBackend(bits, changedBits, '10101');
-}
-
-function crcBackend(bits, bitsToDamage, generator, description = ''){
-    const sent = encode(bits, generator);
-
-    let flipBit = bit => bit === 1 ? 0 : 1;
-    const received = [];
-    received[0] = []; //todo: error
-    sent[0].forEach(x => {received[0].push(x);});
-    bitsToDamage.forEach(b => {
-        received[0][b] = flipBit(received[0][b]);
-    });
-
-    const decoded = decode(received, generator);
-    let hadErrors = decoded[1];
-
-    let falsePositive = "";
-    if (!hadErrors && decoded[0] !== bits) 
-      falsePositive = " <<< Kļūdaini pozitīvs!";
-    let text = !hadErrors 
-      ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"  + falsePositive
-      : "pamanītas kļūdas";
-
-//       No RSA šifrēta ziņojuma dekodēts šāds MD5 kods:<br/>
-// <input id="bitsDecoded" disabled><br/>
-// No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
-// <input id="bitsDecoded" disabled><br/>
-// Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
-
-    let logText = datetime() 
-    + ' ' + description
-    + " sūtāmie biti " + bits + " tika nosūtīti kā " + sent[0].join('')
-    + ", saņemti kā " + received[0].join('') + "; " + text;
-
-    var textnode = document.createTextNode(logText);         
-    var node = document.createElement("li");   
-    node.appendChild(textnode);
-    document.getElementById("log").appendChild(node);
-    return decoded[0];
-}
-//https://www.geeksforgeeks.org/modulo-2-binary-division/
-function modulo2division (divident, divisor) {
-    let part = divisor.length;
-    let tmp = divident.slice(0, part);
-    while (part < divident.length) {
-        tmp = tmp.charAt(0) === '1'
-            ? tmp = xor(divisor, tmp) + divident.charAt(part)
-            : tmp = xor('0'.repeat(part), tmp) + divident.charAt(part);
-        part += 1;      
-    }
-    tmp = tmp.charAt(0) === '1'
-        ? tmp = xor(divisor, tmp)
-        : tmp = xor('0'.repeat(part), tmp);
-    return tmp;
-};
-
-function xor (a, b) {
-    const result = [];
-    for (let i = 1; i < b.length; i++) result.push(a.charAt(i) === b.charAt(i) ? '0' : '1');
-    return result.join('');
-};
-
-function encode(byte, generator) {
-    const frames = [];
-    const appendedData = byte + '0'.repeat(generator.length - 1);
-    const remainder = modulo2division(appendedData, generator);
-    frames.push((byte + remainder).split('').map(item => parseInt(item, 10)));
-    return frames;
-};
-
-function decode(frames, generator) {
-    const data = [];
-    let errors = false;
-    frames.forEach(frame => {
-        let check = modulo2division(frame.join(''), generator);
-        if (check !== '0'.repeat(generator.length - 1)) {
-          errors = true;
-        }
-        data.push(frame.slice(0, -(generator.length - 1)));
-    });
-    return [data[0].join(""), errors];
-};
 
 
-
-
-/*
-*
-* zemāk esošam MD5 aprēķinam, atbilstoši atļaujai uzdevumā, ir izmantota ārēja bibliotēka https://github.com/blueimp/JavaScript-MD5
-*/
-
+////////////////////////////////////////////////////////////////////////////
+// zemāk esošam MD5 aprēķinam, atbilstoši atļaujai uzdevumā, ir izmantota ārēja bibliotēka https://github.com/blueimp/JavaScript-MD5
+////////////////////////////////////////////////////////////////////////////
 /*
  * JavaScript MD5
  * https://github.com/blueimp/JavaScript-MD5
