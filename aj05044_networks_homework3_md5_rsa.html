@@ -22,15 +22,15 @@ var rsa = {
     q: 11,
     n: 33, //p * q
     z: 20, //(p-1)*(q-1)
-    d: 7, // gcd(z, d) = 1
-    e: 3, // d*e = x*z + 1
+    private_key_d: 7, // gcd(z, d) = 1
+    public_key_e: 3, // d*e = x*z + 1
 }
 function encodeRSA(data){
     // funkcija tiek veidota pēc 10.lekcijas slaida
-    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.e) % rsa.n);
+    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.private_key_d) % rsa.n);
 }
 function decodeRSA(data){
-    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.d) % rsa.n))).join("");
+    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.public_key_e) % rsa.n))).join("");
 }
 var suzanneEncoded = encodeRSA("SUZANNE");
 var suzanneDecoded = decodeRSA(suzanneEncoded);
