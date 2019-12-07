@@ -21,6 +21,10 @@ Log:<ul id = "log"></ul>
 
 <script type="text/javascript">
 
+// faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
+// test({plainTextToSend: "KINO", plainTextToReceive: "KINO"});
+// test({plainTextToSend: "KINO", plainTextToReceive: "DINO"});
+
 function test(options){
     document.getElementById('plainTextSent').value = options.plainTextToSend;
     document.getElementById('plainTextReceived').value = options.plainTextToReceive;
@@ -39,14 +43,10 @@ function setMD5(){
     const hashCodeSentField = document.getElementById('hashCodeSent');
     hashCodeSentField.value = md5(plainTextSent.value);
 }
-
-
-
-// -------------
 function datetime(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "." + today.getMilliseconds();
     return date+' '+time;
 }
 
@@ -157,7 +157,6 @@ function decode(frames, generator) {
 /*
 *
 * zemāk esošam MD5 aprēķinam, atbilstoši atļaujai uzdevumā, ir izmantota ārēja bibliotēka https://github.com/blueimp/JavaScript-MD5
-* pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 */
 
 /*
