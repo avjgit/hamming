@@ -37,11 +37,10 @@ crcBackend("100100", [1], '10101', "piemērs ar 1 kļūdu, 1.bitā: ");
 crcBackend("100100", [0,1], '10101', "piemērs ar 2 kļūdām: ");
 crcBackend("100100", [5,7,9], '10101', "piemērs ar kļūdu, kas veidota bojājot bitus atbilstoši ģenerātora pozīcijām: ");
 
-
 function setUI(){
-    const plainTextSent = document.getElementById('plainTextSent');
+    const plainTextField = document.getElementById('plainTextSent');
     const hashCodeSentField = document.getElementById('hashCodeSent');
-    hashCodeSentField.value = md5(plainTextSent.value);
+    hashCodeSentField.value = md5(plainTextField.value);
 }
 function datetime(){
     var today = new Date();
