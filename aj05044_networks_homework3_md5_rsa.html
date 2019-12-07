@@ -16,8 +16,25 @@ Log:<ul id = "log"></ul>
 // faila pašās beigās - testa izsaukumi ar saņemtiem tekstiem - patiesu KINO un viltoto DINO
 // sendAndReceive({txtSent: "KINO", txtReceived: "KINO"});
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
-
-// encodeRSA("SUZANNE");
+// te RSA tests:
+var rsa = {
+    p: 3,
+    q: 11,
+    n: 33, //p * q
+    z: 20, //(p-1)*(q-1)
+    d: 7, // gcd(z, d) = 1
+    e: 3, // d*e = x*z + 1
+}
+function encodeRSA(data){
+    // funkcija tiek veidota pēc 10.lekcijas slaida
+    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.e) % rsa.n);
+}
+function decodeRSA(data){
+    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.d) % rsa.n))).join("");
+}
+var suzanneEncoded = encodeRSA("SUZANNE");
+var suzanneDecoded = decodeRSA(suzanneEncoded);
+console.log(`SUZANNE encoded as ${suzanneEncoded} decoded as ${suzanneDecoded}`);
 
 function fillReceived(){
     document.getElementById('plainTextReceived').value = 
@@ -54,30 +71,6 @@ function log(txt) {
     node.appendChild(textnode);
     document.getElementById("log").appendChild(node);
 }
-var rsa = {
-    p: 3,
-    q: 11,
-    n: 33, //p * q
-    z: 20, //(p-1)*(q-1)
-    d: 7, // gcd(z, d) = 1
-    e: 3, // d*e = x*z + 1
-}
-
-console.log(derr(rr("SUZANNE")));
-function rr(data){
-    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.e) % rsa.n);
-}
-function derr(data){
-    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.d) % rsa.n))).join("");
-}
-function encodeRSA(dataToEncode){
-    // funkcija tiek veidota pēc 10.lekcijas slaida
-    return dataToEncode;
-}
-function decodeRSA(dataToDecode){
-    return dataToDecode;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 // zemāk esošam MD5 aprēķinam, atbilstoši atļaujai uzdevumā, ir izmantota ārēja bibliotēka https://github.com/blueimp/JavaScript-MD5
