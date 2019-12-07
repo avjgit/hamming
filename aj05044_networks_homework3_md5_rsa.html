@@ -16,48 +16,27 @@ Teksta elektroniskam parakstam tiek ģenerēts MD5 kods<br/>
 <input id="wordSent" disabled><br/>
 MD5 kods tiek RSA šifrēts:<br/>
 <input id="rsaSent" disabled><br/>
-Bobs saņem šādu tekstu:<br/>
+Bobs saņems šādu tekstu:<br/>
 <small>
 var būt kā identisks Alises nosūtītajam, vai arī ļaundara Mallory, <i>man-in-the-middle</i>, viltots</small>
 <br/>
 <input id="wordReceived"><br/>
-<p><input type="submit" onClick="decodeCRC()" value="Dekodēt"></p>
-No RSA šifrēta ziņojuma dekodēts šāds MD5 kods:<br/>
-<input id="bitsDecoded" disabled><br/>
-No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
-<input id="bitsDecoded" disabled><br/>
-Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
+<p><input type="submit" onClick="decodeCRC()" value="Nosūtīt Bobam"></p>
 <hr/>
 
-<input id="txtToEncode">
-<button type="submit" id="calculateMD5">-></button>
-<input id="result" />
 Log:<ul id = "log"></ul>
 
 <script type="text/javascript">
 
 function setMD5(){
-    const sendingBits = document.getElementById('sendingBits').value;
+    const sendingBits = document.getElementById('sendingBits');
     const wordSentField = document.getElementById('wordSent');
     wordSentField.value = md5(sendingBits.value);
 }
 
-;(function() {
-      'use strict'
-    
-      var input = document.getElementById('txtToEncode')
-      document
-        .getElementById('calculateMD5')
-        .addEventListener('click', function(event) {
-          event.preventDefault()
-          document.getElementById('result').value = md5(input.value)
-        })
-      input.value = '日本'
-    })()
 
 
-
-
+// -------------
 function datetime(){
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -105,6 +84,12 @@ function crcBackend(bits, bitsToDamage, generator, description = ''){
     let text = !hadErrors 
       ? "atšifrēts ziņojums " + decoded[0] + ", bez kļūdām"  + falsePositive
       : "pamanītas kļūdas";
+
+//       No RSA šifrēta ziņojuma dekodēts šāds MD5 kods:<br/>
+// <input id="bitsDecoded" disabled><br/>
+// No vēstules teksta tiek ģenerēts šāds MD5 kods:<br/>
+// <input id="bitsDecoded" disabled><br/>
+// Salīdzinot šos abus MD5 kodus, tie - sakrīt/atšķiras, secinājums - vēstule autentiska/viltota.
 
     let logText = datetime() 
     + ' ' + description
