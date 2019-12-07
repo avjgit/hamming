@@ -63,9 +63,12 @@ var rsa = {
     e: 3, // d*e = x*z + 1
 }
 
-console.log(rr("SUZANNE"));
+console.log(derr(rr("SUZANNE")));
 function rr(data){
-    return [...data].map(x => x.charCodeAt()-64);
+    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.e) % rsa.n);
+}
+function derr(data){
+    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.d) % rsa.n))).join("");
 }
 function encodeRSA(dataToEncode){
     // funkcija tiek veidota pēc 10.lekcijas slaida
