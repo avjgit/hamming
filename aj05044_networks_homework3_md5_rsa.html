@@ -27,12 +27,14 @@ var rsa = {
     public_key_e: 3 // d*e = x*z + 1
 }
 // Izvēloties lielākus private/public key, piem., 9 un 57
-// p	17
-// q	17
-// n	289
-// z	256
-// d	9
-// e	57
+// var rsa = {
+//     p: 17,
+//     q: 17,
+//     n: 289, //p * q
+//     z: 256, //(p-1)*(q-1)
+//     private_key_d: 9, // gcd(z, d) = 1
+//     public_key_e: 57 // d*e = x*z + 1
+// }
 // rodas aprēķinu problēmas, kāpinot unikodu, piemēram, 65 - 57.pakāpē
 // javascript valodā (kuru izmantoju ērta demo iespējām) to risina ar īpašu big integer bibliotēku:
 // http://www-cs-students.stanford.edu/~tjw/jsbn/
@@ -43,13 +45,25 @@ var rsa = {
 // kas ir industrijas kvalitātes, bet ir stipri aiz vienkārša prototipa jeb proof-of-concept "rāmjiem",
 // par traucē saprast algoritma būtību aiz javascript īpatnībām nepieciešamām implementācijas detaļām;
 // atslēgu ar nelielu vērtību izmantošana labi der apmācības mērķim, jo ļauj saredzēt algoritma būtību
-
+function powerMod(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    var result = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+        if (exponent % 2 === 1)  //odd number
+            result = (result * base) % modulus;
+        exponent = exponent >> 1; //divide by 2
+        base = (base * base) % modulus;
+    }
+    return result;
+}
 function encodeRSA(data){
-    // funkcija tiek veidota pēc 10.lekcijas slaida
-    return [...data].map(x => Math.pow(x.charCodeAt()-64, rsa.private_key_d) % rsa.n);
+    return [...data].map(x => 
+    powerMod(x.charCodeAt()-64, rsa.private_key_d, rsa.n));
 }
 function decodeRSA(data){
-    return [...data].map(x => String.fromCharCode(64 + (Math.pow(x, rsa.public_key_e) % rsa.n))).join("");
+    return [...data].map(x => String.fromCharCode(
+      64 + powerMod(x, rsa.public_key_e, rsa.n))).join("");
 }
 var suzanneEncoded = encodeRSA("SUZANNE");
 var suzanneDecoded = decodeRSA(suzanneEncoded);
