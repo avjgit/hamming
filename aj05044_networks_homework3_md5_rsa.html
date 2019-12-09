@@ -18,33 +18,22 @@ Log:<ul id = "log"></ul>
 // sendAndReceive({txtSent: "KINO", txtReceived: "DINO"});
 
 // RSA tests:
-var rsa = {
-    p: 3,
-    q: 11,
-    n: 33, //p * q
-    z: 20, //(p-1)*(q-1)
-    private_key_d: 7, // gcd(z, d) = 1
-    public_key_e: 3 // d*e = x*z + 1
-}
-// Izvēloties lielākus private/public key, piem., 9 un 57
 // var rsa = {
-//     p: 17,
-//     q: 17,
-//     n: 289, //p * q
-//     z: 256, //(p-1)*(q-1)
-//     private_key_d: 9, // gcd(z, d) = 1
-//     public_key_e: 57 // d*e = x*z + 1
+//     p: 3,
+//     q: 11,
+//     n: 33, //p * q
+//     z: 20, //(p-1)*(q-1)
+//     private_key_d: 7, // gcd(z, d) = 1
+//     public_key_e: 3 // d*e = x*z + 1
 // }
-// rodas aprēķinu problēmas, kāpinot unikodu, piemēram, 65 - 57.pakāpē
-// javascript valodā (kuru izmantoju ērta demo iespējām) to risina ar īpašu big integer bibliotēku:
-// http://www-cs-students.stanford.edu/~tjw/jsbn/
-// http://www-cs-students.stanford.edu/~tjw/jsbn/jsbn.js
-// un sarežģītāku RSA algoritma implementāciju
-// http://www-cs-students.stanford.edu/~tjw/jsbn/rsa.js
-// http://www-cs-students.stanford.edu/~tjw/jsbn/rsa2.js
-// kas ir industrijas kvalitātes, bet ir stipri aiz vienkārša prototipa jeb proof-of-concept "rāmjiem",
-// par traucē saprast algoritma būtību aiz javascript īpatnībām nepieciešamām implementācijas detaļām;
-// atslēgu ar nelielu vērtību izmantošana labi der apmācības mērķim, jo ļauj saredzēt algoritma būtību
+// let rsa_private_key = 7;
+// let rsa_public_key = 3;
+// let rsa_modulus = 33;
+
+let rsa_private_key = 5;
+let rsa_public_key = 173;
+let rsa_modulus = 323;
+
 function powerMod(base, exponent, modulus) {
     if (modulus === 1) return 0;
     var result = 1;
@@ -59,11 +48,11 @@ function powerMod(base, exponent, modulus) {
 }
 function encodeRSA(data){
     return [...data].map(x => 
-    powerMod(x.charCodeAt()-64, rsa.private_key_d, rsa.n));
+    powerMod(x.charCodeAt()-64, rsa_private_key, rsa_modulus));
 }
 function decodeRSA(data){
     return [...data].map(x => String.fromCharCode(
-      64 + powerMod(x, rsa.public_key_e, rsa.n))).join("");
+      64 + powerMod(x, rsa_public_key, rsa_modulus))).join("");
 }
 var suzanneEncoded = encodeRSA("SUZANNE");
 var suzanneDecoded = decodeRSA(suzanneEncoded);
