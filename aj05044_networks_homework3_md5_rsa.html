@@ -23,25 +23,25 @@ let rsa_private_key = 5;  // d; relatīvi parasts pret z
 let rsa_public_key = 173; // e; tāds, ka (d*e) mod z = 1
 let rsa_modulus = 323;    // p * q
 
-function powerMod(base, exponent, modulus) {
+function getModulus(base, exponent, modulus) {
     if (modulus === 1) return 0;
     var result = 1;
     base = base % modulus;
     while (exponent > 0) {
-        if (exponent % 2 === 1)  //odd number
+        if (exponent % 2 === 1) 
             result = (result * base) % modulus;
-        exponent = exponent >> 1; //divide by 2
+        exponent = exponent >> 1;
         base = (base * base) % modulus;
     }
     return result;
 }
 function encodeRSA(data){
     return [...data].map(x => 
-    powerMod(x.charCodeAt()-64, rsa_private_key, rsa_modulus));
+        getModulus(x.charCodeAt() - 64, rsa_private_key, rsa_modulus));
 }
 function decodeRSA(data){
-    return [...data].map(x => String.fromCharCode(
-      64 + powerMod(x, rsa_public_key, rsa_modulus))).join("");
+    return [...data].map(x => 
+        String.fromCharCode(64 + getModulus(x, rsa_public_key, rsa_modulus))).join("");
 }
 var suzanneEncoded = encodeRSA("SUZANNE");
 var suzanneDecoded = decodeRSA(suzanneEncoded);
